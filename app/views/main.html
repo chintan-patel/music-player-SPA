@@ -1,0 +1,27 @@
+<div class="row placeholders">
+  <audio-player></audio-player>
+  <div class="sub-header">Users:</div>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="user in users" title="{{ user.name }}">
+      <span class="badge">{{ user.joined_date }}</span>
+      {{ user.name }}
+    </li>
+  </ul>
+</header>
+
+<div class="sub-header">Playlist Added:</div>
+<div class="well">
+  <ul class="list-group clearfix">
+    <li
+      class="list-group-item"
+      ng-repeat="item in data | startFrom:currentTrack | limitTo:pageSize"
+      ng-style="{'background-image':'url({{item.image}})',
+	'width' : '220px',
+	'height' : '220px',
+	'float' : 'left',
+	'margin-right' : '20px'}"
+      title="{{item.artist.name}} - {{item.title}}"
+      data-file="{{item.file}}"
+    ></li>
+  </ul>
+</div>
