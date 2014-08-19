@@ -13,7 +13,9 @@ angular.module('audioPlayer-directive', [])
                 $scope.add= function(){ $rootScope.$broadcast('audio.add'); };
 
                 // tell audio element to play/pause, you can also use $scope.audio.play() or $scope.audio.pause();
-                $scope.playpause = function(){ var a = $scope.audio.paused ? $scope.audio.play() : $scope.audio.pause(); };
+                $scope.playpause = function(){
+                    var a = $scope.audio.paused ? $scope.audio.play() : $scope.audio.pause();
+                };
 
                 // listen for audio-element events, and broadcast stuff
                 $scope.audio.addEventListener('play', function(){ $rootScope.$broadcast('audio.play', this); });
@@ -23,6 +25,7 @@ angular.module('audioPlayer-directive', [])
 
                 // set track & play it
                 $rootScope.$on('audio.set', function(r, file, info, currentNum, totalNum){
+                    console.log(file);
                     var playing = !$scope.audio.paused;
                     $scope.audio.src = file;
                     var a = playing ? $scope.audio.play() : $scope.audio.pause();

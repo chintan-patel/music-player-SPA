@@ -7,10 +7,17 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
+var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+
 module.exports = function (grunt) {
 
+  
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
+  
+  
+  grunt.loadNpmTasks('grunt-express-server');
+
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
@@ -23,6 +30,19 @@ module.exports = function (grunt) {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
       dist: 'dist'
+    },
+    express:{
+      options:{
+        port:3000,
+        delay:0,
+        output: ".+",
+        debug:true
+      },
+      server: {
+        options: {
+           script: 'app/scripts/services/node_music_connect.js'
+        }
+      }
     },
 
     // Watches files for changes and runs tasks based on the changed files
@@ -69,13 +89,29 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      proxies: [{
+        context: '/upload', // the context of the data service
+        host: 'localhost', // wherever the data service is running
+        port: 3000 // the port that the data service is running on
+      }],
       livereload: {
         options: {
           open: true,
           base: [
             '.tmp',
             '<%= yeoman.app %>'
-          ]
+          ],
+          middleware: function(connect, options, middlewares) {
+              // inject a custom middleware into the array of default middlewares
+              // this is likely the easiest way for other grunt plugins to
+              // extend the behavior of grunt-contrib-connect
+              middlewares.push(function(req, res, next) {
+                  res.setHeader('Access-Control-Allow-Origin', '*');
+                  res.setHeader('Access-Control-Allow-Methods', '*');
+                  return next();
+              });
+              return middlewares;
+          }
         }
       },
       test: {
@@ -382,9 +418,11 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'wiredep',
-      'concurrent:server',
-      'autoprefixer',
+//      'wiredep',
+      'configureProxies:server',
+      'express',
+//      'concurrent:server',
+//      'autoprefixer',
       'connect:livereload',
       'watch'
     ]);
@@ -397,7 +435,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
-    'concurrent:test',
+  //  'concurrent:test',
     'autoprefixer',
     'connect:test',
     'karma'
@@ -407,7 +445,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'wiredep',
     'useminPrepare',
-    'concurrent:dist',
+  //  'concurrent:dist',
     'autoprefixer',
     'concat',
     'ngmin',

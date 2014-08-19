@@ -17,13 +17,14 @@ var app = angular
     'ngSanitize',
     'ngTouch',
     'btford.socket-io',
+    'angularFileUpload',
     'audioPlayer-directive'
   ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainController'
       })
       .otherwise({
         redirectTo: '/'

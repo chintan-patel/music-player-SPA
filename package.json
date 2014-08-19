@@ -2,12 +2,17 @@
   "name": "angularjs",
   "version": "0.0.0",
   "dependencies": {
-    "socket.io" : "~0.9.16"
+    "socket.io": "~0.9.16"
   },
   "devDependencies": {
+    "connect": "^2.20.2",
+    "express": "~4.0.0",
+    "mongoose": "~3.6.13",
+    "body-parser": "~1.0.1",
     "grunt": "^0.4.1",
     "grunt-autoprefixer": "^0.7.3",
     "grunt-concurrent": "^0.5.0",
+    "grunt-connect-proxy": "^0.1.10",
     "grunt-contrib-clean": "^0.5.0",
     "grunt-contrib-compass": "^0.7.2",
     "grunt-contrib-concat": "^0.4.0",
@@ -19,6 +24,7 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-express-server": "^0.4.17",
     "grunt-filerev": "^0.2.1",
     "grunt-google-cdn": "^0.4.0",
     "grunt-newer": "^0.7.0",

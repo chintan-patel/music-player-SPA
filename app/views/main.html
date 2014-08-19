@@ -1,5 +1,16 @@
+<div>
+  <input type="text" ng-model="myModelObj">
+  <input type="file" ng-file-select="onFileSelect($files)" >
+  <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class"
+    ng-show="dropSupported">drop files here</div>
+  <div ng-file-drop-available="dropSupported=true" 
+      ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
+  <button ng-click="upload.abort()">Cancel Upload</button>
+</div>
+  
 <div class="row placeholders">
   <audio-player></audio-player>
+  <input ng-model='syncAudio' ng-click="sync()" type="checkbox" />
   <div class="sub-header">Users:</div>
   <ul class="list-group">
     <li class="list-group-item" ng-repeat="user in users" title="{{ user.name }}">
@@ -8,16 +19,21 @@
     </li>
   </ul>
 </header>
-
+  <ul class="list-group clearfix">
+    <li
+      class="list-group-item"
+      ng-repeat="each_list in lists"
+      >{{ each_list.Key }}</li>
+  </ul>
 <div class="sub-header">Playlist Added:</div>
 <div class="well">
   <ul class="list-group clearfix">
     <li
       class="list-group-item"
-      ng-repeat="item in data | startFrom:currentTrack | limitTo:pageSize"
+      ng-repeat="item in data"
       ng-style="{'background-image':'url({{item.image}})',
-	'width' : '220px',
-	'height' : '220px',
+	'width' : '40px',
+	'height' : '40px',
 	'float' : 'left',
 	'margin-right' : '20px'}"
       title="{{item.artist.name}} - {{item.title}}"
