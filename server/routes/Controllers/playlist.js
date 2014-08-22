@@ -1,4 +1,5 @@
-var Playlist = require('../models/playlist.js');
+var Playlist = require(__dirname + '/../models/playlist.js');
+
 
 module.exports = function(router) {
     router.get('/playlist', function(req, res) {

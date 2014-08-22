@@ -1,4 +1,4 @@
-var Audio = require('../models/audio.js');
+var Audio = require(__dirname + '/../models/audio.js');
 
 module.exports = function(router) {
     router.get('/audio', function(req, res) {

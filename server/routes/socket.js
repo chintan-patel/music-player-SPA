@@ -28,8 +28,8 @@ module.exports.socketConnection =  function(socket, s3Client)
       "file": signedUrl
     },
     user : {
-      name : socket.id,
-      joined_date:  new Date().toDateString() + " " + new Date().toTimeString()
+      username : socket.id,
+      created_on :  new Date().toDateString() + " " + new Date().toTimeString()
     },
     listObjects: listObjects
     
@@ -37,12 +37,12 @@ module.exports.socketConnection =  function(socket, s3Client)
 
   // notify other clients that a new user has joined
   socket.broadcast.emit('user:join', {
-    name : socket.id,
-    joined_date:  new Date().toDateString() + " " + new Date().toTimeString()
+    username : socket.id,
+    created_on :  new Date().toDateString() + " " + new Date().toTimeString()
   });
   
   socket.on('audio.set',function(data){
-    socket.boradcast.emit('audio.set',data)
+    socket.broadcast.emit('audio.set',data)
   });
   socket.on('audio.play',function(){
   });
@@ -57,7 +57,7 @@ module.exports.socketConnection =  function(socket, s3Client)
   // clean up when a user leaves, and broadcast it to other users
   socket.on('user:disconnected', function () {
     socket.broadcast.emit('user:left', {
-      'user' : socket.id
+      'username' : socket.id
       });
   });
 }

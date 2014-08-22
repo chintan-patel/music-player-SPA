@@ -14,6 +14,15 @@ angular.module('musicPlayerApp')
   $scope.users=[];
   $scope.lists=[];
   $scope.syncAudio = false;
+  $http.get('http://localhost:3000/api/user')
+      .success(function(data, status, headers, config)
+      {
+	$scope.users= data;
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $scope.error = data;
+      });
   var updateTrack = function(){
     $scope.syncAudio = true;
     $rootScope.$broadcast('audio.set',  $scope.data[$scope.currentTrack].file,
@@ -21,6 +30,19 @@ angular.module('musicPlayerApp')
       $scope.currentTrack,
       $scope.data.length
     );
+  };
+  
+  $scope.updateUser = function(data){
+    console.log(data);
+    $http.put('http://localhost:3000/api/user/'+data._id, data)
+      .success(function(data, status, headers, config)
+      {
+	$scope.users= data;
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $scope.error = data;
+      });
   };
   
   $scope.onFileSelect = function($files) {
@@ -82,28 +104,52 @@ angular.module('musicPlayerApp')
   });
   socket.on('user:connected',function(data){
     $scope.data.push(data.song);
+    console.log(data.user);
     $scope.users.push(data.user);
+    console.log(data.user);
     $scope.lists = data.listObjects;
     console.log($scope.lists);
     updateTrack();
   });
   socket.on('user:disconnected',function(data){
-    $scope.users.push(data.name+  '  disconnected');
+    $scope.users.push(data.username+  '  disconnected');
   });
   socket.on('user:join',function(data){
+    console.log($scope.users);
     $scope.users.push(data);
-    updateTrack();
+    console.log($scope.users);
+    //updateTrack();
   });
-
-  /*
-  $http.get('data/music.json')
-    .success(function(response){
-	$scope.data = response;
-	updateTrack();
-  });
-  */
 })
-.controller('UploadController', function ($scope, $http, $rootScope, socket, $upload, $routeParams) {
-  console.log($routeParams);
-  $scope.uploadedStatus = 'Success';
+.controller('SignUpController', function ($scope, $http, $rootScope, $routeParams) {
+  $scope.signup = function(){
+    if ($scope.user != undefined) {
+      $http.post('http://localhost:3000/api/user', $scope.user)
+      .success(function(data, status, headers, config)
+      {
+	  $rootScope.location.href = '/';
+
+      })
+      .error(function(data, status, headers, config)
+      {
+	  console.log(data);
+	  $scope.error = data;
+      });
+    }
+  }
+})
+.controller('LoginController', function ($scope, $http, $rootScope, $routeParams) {
+  $scope.signup = function(){
+    if ($scope.user != undefined) {
+      $http.post('http://localhost:3000/login', $scope.user)
+      .success(function(data, status, headers, config)
+      {
+	  console.log(data);
+      })
+      .error(function(data, status, headers, config)
+      {
+	  console.log(data);
+      });
+    }
+  }
 });
