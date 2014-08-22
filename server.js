@@ -24,7 +24,7 @@ mongoose.connect('mongodb://accountUser:password@localhost:27017/test'); // conn
 *  Configuration
 */
 // Get AWS/S3Client
-var credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-root-account'});
+var credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-account'});
 AWS.config.credentials = credentials;
 var s3Client = new AWS.S3();
 

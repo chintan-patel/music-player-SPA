@@ -28,8 +28,9 @@ module.exports.socketConnection =  function(socket, s3Client)
       "file": signedUrl
     },
     user : {
-      username : socket.id,
-      created_on :  new Date().toDateString() + " " + new Date().toTimeString()
+	_id : socket.id,
+	username: 'chintan-'+socket.id,
+	created_on :  new Date()  + " " + new Date().toTimeString()
     },
     listObjects: listObjects
     

@@ -11,6 +11,16 @@
 <div class="row placeholders">
   <audio-player></audio-player>
   <input ng-model='syncAudio' ng-click="sync()" type="checkbox" />
+  <div class="sub-header">Online Users:</div>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="user in online_users" title="{{ user.username }}">
+      <span class="badge">{{ user.created_on }}</span>
+      <span class="id">{{ user._id}}</span>
+      {{ user.username }}
+      <div class='btn' ng-click="deleteUser(user)">delete</div>
+      <div class='btn' ng-click="updateUser(user)">edit</div>
+    </li>
+  </ul>
   <div class="sub-header">Users:</div>
   <ul class="list-group">
     <li class="list-group-item" ng-repeat="user in users" title="{{ user.username }}">
@@ -21,7 +31,7 @@
       <div class='btn' ng-click="updateUser(user)">edit</div>
     </li>
   </ul>
-</header>
+</div>
   <ul class="list-group clearfix">
     <li
       class="list-group-item"

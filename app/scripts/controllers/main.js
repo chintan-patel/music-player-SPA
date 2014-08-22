@@ -12,6 +12,7 @@ angular.module('musicPlayerApp')
   $scope.pageSize = 50;
   $scope.data=[];
   $scope.users=[];
+  $scope.online_users=[];
   $scope.lists=[];
   $scope.syncAudio = false;
   $http.get('http://localhost:3000/api/user')
@@ -104,20 +105,20 @@ angular.module('musicPlayerApp')
   });
   socket.on('user:connected',function(data){
     $scope.data.push(data.song);
+    console.log($scope.online_users);
     console.log(data.user);
-    $scope.users.push(data.user);
-    console.log(data.user);
+    $scope.online_users.push(data.user);
+    console.log($scope.online_users);
     $scope.lists = data.listObjects;
-    console.log($scope.lists);
     updateTrack();
   });
   socket.on('user:disconnected',function(data){
-    $scope.users.push(data.username+  '  disconnected');
+    $scope.online_users.push(data.username+  '  disconnected');
   });
   socket.on('user:join',function(data){
-    console.log($scope.users);
-    $scope.users.push(data);
-    console.log($scope.users);
+    console.log($scope.online_users);
+    $scope.online_users.push(data);
+    console.log($scope.online_users);
     //updateTrack();
   });
 })
