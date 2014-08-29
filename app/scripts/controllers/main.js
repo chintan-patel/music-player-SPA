@@ -119,36 +119,44 @@ angular.module('musicPlayerApp')
     console.log($scope.online_users);
     $scope.online_users.push(data);
     console.log($scope.online_users);
-    //updateTrack();
   });
 })
-.controller('SignUpController', function ($scope, $http, $rootScope, $routeParams) {
+.controller('SignUpController', function ($scope, $location, $http, $rootScope, $routeParams) {
   $scope.signup = function(){
+    var first_name = $scope.user.name;
+    var last_name = $scope.user.name;
+    
+    $scope.user.first_name = name.substr(0,$scope.user.name.indexOf(' '));
+    $scope.user.last_name = name.substr($scope.user.name.indexOf(' ')+1);
+    
     if ($scope.user != undefined) {
-      $http.post('http://localhost:3000/api/user', $scope.user)
+      $http.post('/api/user', $scope.user)
       .success(function(data, status, headers, config)
       {
-	  $rootScope.location.href = '/';
+	$location.path('/home');
 
       })
       .error(function(data, status, headers, config)
       {
-	  console.log(data);
 	  $scope.error = data;
       });
     }
   }
 })
 .controller('LoginController', function ($scope, $http, $rootScope, $routeParams) {
-  $scope.signup = function(){
+  $scope.login = function() {
     if ($scope.user != undefined) {
-      $http.post('http://localhost:3000/login', $scope.user)
+      var data = {'username' : $scope.user.username, 'password' : $scope.user.password };
+      console.log(data);
+      $http.post('/api/login', data)
       .success(function(data, status, headers, config)
       {
+	  $location.path('/home');
 	  console.log(data);
       })
       .error(function(data, status, headers, config)
       {
+	  $location.path('/login');
 	  console.log(data);
       });
     }

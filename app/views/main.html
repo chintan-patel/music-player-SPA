@@ -1,4 +1,5 @@
-<div>
+<div class="well col-xs-12 col-sm-6 col-md-8">
+  <!--
   <input type="text" ng-model="myModelObj">
   <input type="file" ng-file-select="onFileSelect($files)" >
   <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class"
@@ -6,51 +7,66 @@
   <div ng-file-drop-available="dropSupported=true" 
       ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
   <button ng-click="upload.abort()">Cancel Upload</button>
+  -->
+  <div class="row-fluid placeholders">
+    <div class="col-xs-3 col-sm-4  col-md-6">
+      
+    </div>
+    <div class="col-xs-3 col-sm-4 col-md-6">
+      <ul class="list-group clearfix">
+      <li
+	class="list-group-item"
+	ng-repeat="item in data"
+	ng-style="
+	{
+	  'width' : '40px',
+	  'height' : '40px',
+	  'float' : 'left',
+	  'margin-right' : '20px'
+	}"
+	title="{{item.artist.name}} - {{item.title}}"
+	data-file="{{item.file}}"
+      ><img src="{{item.image}" /></li>
+    </ul>
+    </div>
+    <ul class="list-group clearfix">
+      <li
+	class="list-group-item"
+	ng-repeat="each_list in lists"
+	>{{ each_list.Key }}</li>
+    </ul>
+  </div>
 </div>
-  
-<div class="row placeholders">
-  <audio-player></audio-player>
-  <input ng-model='syncAudio' ng-click="sync()" type="checkbox" />
-  <div class="sub-header">Online Users:</div>
-  <ul class="list-group">
-    <li class="list-group-item" ng-repeat="user in online_users" title="{{ user.username }}">
-      <span class="badge">{{ user.created_on }}</span>
-      <span class="id">{{ user._id}}</span>
-      {{ user.username }}
-      <div class='btn' ng-click="deleteUser(user)">delete</div>
-      <div class='btn' ng-click="updateUser(user)">edit</div>
-    </li>
-  </ul>
-  <div class="sub-header">Users:</div>
-  <ul class="list-group">
-    <li class="list-group-item" ng-repeat="user in users" title="{{ user.username }}">
-      <span class="badge">{{ user.created_on }}</span>
-      <span class="id">{{ user._id}}</span>
-      {{ user.username }}
-      <div class='btn' ng-click="deleteUser(user)">delete</div>
-      <div class='btn' ng-click="updateUser(user)">edit</div>
-    </li>
-  </ul>
+<div class="col-xs-3 col-md-2">
+    <div class="sub-header">Online Users:</div>
+      <ul class="list-group">
+	<li class="list-group-item" ng-repeat="user in online_users" title="{{ user.username }}">
+	  <span class="" style="font-size:0.5em">{{ user.created_on }}</span>
+	  <span class="id hide">{{ user._id}}</span>
+	  {{ user.username }}
+	  <div class='btn' ng-click="deleteUser(user)">delete</div>
+	  <div class='btn' ng-click="updateUser(user)">edit</div>
+	</li>
+      </ul>
 </div>
-  <ul class="list-group clearfix">
-    <li
-      class="list-group-item"
-      ng-repeat="each_list in lists"
-      >{{ each_list.Key }}</li>
-  </ul>
-<div class="sub-header">Playlist Added:</div>
-<div class="well">
-  <ul class="list-group clearfix">
-    <li
-      class="list-group-item"
-      ng-repeat="item in data"
-      ng-style="{'background-image':'url({{item.image}})',
-	'width' : '40px',
-	'height' : '40px',
-	'float' : 'left',
-	'margin-right' : '20px'}"
-      title="{{item.artist.name}} - {{item.title}}"
-      data-file="{{item.file}}"
-    ></li>
-  </ul>
+<div class="col-xs-3 col-md-2">
+    <div>Chat Column</div>
+    <div class="sub-header">Users:</div>
+      <ul class="list-group">
+	<li class="list-group-item" ng-repeat="user in users" title="{{ user.username }}">
+	  <span class="" style="font-size:0.5em">{{ user.created_on }}</span>
+	  <div class="hide">{{ user._id}}</div>
+	  <div class="">{{ user.first_name}} {{ user.last_name }}</div>
+	  <div class="">{{ user.username }}</div>
+	  <div class='btn' ng-click="deleteUser(user)">delete</div>
+	  <div class='btn-primary btn' ng-click="updateUser(user)">edit</div>
+	</li>
+      </ul>
 </div>
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <audio-player></audio-player>
+    </div>
+  </div>
+</nav>

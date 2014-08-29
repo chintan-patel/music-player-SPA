@@ -30,7 +30,7 @@ module.exports.socketConnection =  function(socket, s3Client)
     user : {
 	_id : socket.id,
 	username: 'chintan-'+socket.id,
-	created_on :  new Date()  + " " + new Date().toTimeString()
+	created_on :  new Date().toTimeString()
     },
     listObjects: listObjects
     

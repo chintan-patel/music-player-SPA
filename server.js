@@ -1,5 +1,5 @@
 /**
-*  * Module dependencies
+* Module dependencies
 **/
 'use strict';
 // Initialize the node modules
@@ -11,14 +11,15 @@ var io = require('socket.io').listen(server);
 var AWS = require('aws-sdk');
 var mongoose   = require('mongoose');
 var bodyParser= require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session')
 var port    = parseInt(process.env.PORT, 10) || 3000;
 var passport =  require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt');
 
 
 // Get DB connection
-mongoose.connect('mongodb://accountUser:password@localhost:27017/test'); // connect to our database
+// Connect to our database
+mongoose.connect('mongodb://accountUser:password@localhost:27017/test');
 
 /**
 *  Configuration
@@ -31,47 +32,52 @@ var s3Client = new AWS.S3();
 // Set App Port
 app.set('port', process.env.PORT || 3000);
 
+require('./server/routes/controllers/passport_config.js')(passport);
+
 app.use(connect.json());
 app.use(connect.urlencoded());
-//app.use(express.session({ secret: '1234567890' }));
-// Initialize Passport!  Also use passport.session() middleware, to support
-// persistent login sessions (recommended).
+app.use(express.static('app'));
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(session({ 
+    secret: process.env.SESSION_SECRET || 'secret', 
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.set('views', __dirname + '/app/views');
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
-app.use(express.static('app'));
-
 
 // Log Request
 var router = express.Router(); // get an instance of the express Router
 router.use(function(req, res, next) {
-  console.log('Processing request...', req.body);
-  next();
+    console.log('Processing request...', req.body);
+    next();
 });
 // Use router with /api prefix
 app.use('/api', router);
 
 // development only
 if (app.get('env') === 'development') {
-app.use(connect.errorHandler({ dumpExceptions: true, showStack: true }));
+    app.use(connect.errorHandler({ dumpExceptions: true, showStack: true }));
 }
-
   
 // production only
 if (app.get('env') === 'production') {
 }
 
-app.get("/",function(req, res){
+app.get('/',function(req, res){
     res.render(__dirname + '/app/index.html');
 });
 
-//// Configure Controllers
-require(__dirname + '/server/routes/controllers/audio.js')(router); 
-require('./server/routes/controllers/playlist.js')(router); 
+// Configure Controllers
 require('./server/routes/controllers/user.js')(router);
-
+require('./server/routes/controllers/login.js')(router,passport);
+require('./server/routes/controllers/audio.js')(router); 
+require('./server/routes/controllers/playlist.js')(router); 
 
 // Socket.io Communication
 var connection = require('./server/routes/socket.js')
