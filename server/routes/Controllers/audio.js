@@ -20,7 +20,8 @@ module.exports = function(router) {
 		
 	    var audio = new Audio();
 	    audio.name = req.body.name;
-	    console.log(req.body);
+	    audio.key= req.body.key;
+	    audio.user_id = req.body.user_id;
 	    if (audio.name == undefined) {
 		res.json({message: 'Not Added'});
 	    }

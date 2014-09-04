@@ -1,4 +1,4 @@
-<div class="well col-xs-12 col-sm-6 col-md-8">
+<div class="col-xs-12 col-sm-6 col-md-8 pull-right">
   <!--
   <input type="text" ng-model="myModelObj">
   <input type="file" ng-file-select="onFileSelect($files)" >
@@ -8,37 +8,14 @@
       ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
   <button ng-click="upload.abort()">Cancel Upload</button>
   -->
-  <div class="row-fluid placeholders">
-    <div class="col-xs-3 col-sm-4  col-md-6">
-      
-    </div>
-    <div class="col-xs-3 col-sm-4 col-md-6">
-      <ul class="list-group clearfix">
-      <li
-	class="list-group-item"
-	ng-repeat="item in data"
-	ng-style="
-	{
-	  'width' : '40px',
-	  'height' : '40px',
-	  'float' : 'left',
-	  'margin-right' : '20px'
-	}"
-	title="{{item.artist.name}} - {{item.title}}"
-	data-file="{{item.file}}"
-      ><img src="{{item.image}" /></li>
-    </ul>
-    </div>
     <ul class="list-group clearfix">
       <li
 	class="list-group-item"
 	ng-repeat="each_list in lists"
-	>{{ each_list.Key }}</li>
+	data-file="{{ each_list.key }}">{{ each_list.name }}</li>
     </ul>
-  </div>
 </div>
-<div class="col-xs-3 col-md-2">
-    <div class="sub-header">Online Users:</div>
+<div class="col-xs-3 col-md-2 pull-right">
       <ul class="list-group">
 	<li class="list-group-item" ng-repeat="user in online_users" title="{{ user.username }}">
 	  <span class="" style="font-size:0.5em">{{ user.created_on }}</span>
@@ -49,10 +26,8 @@
 	</li>
       </ul>
 </div>
-<div class="col-xs-3 col-md-2">
-    <div>Chat Column</div>
-    <div class="sub-header">Users:</div>
-      <ul class="list-group">
+<div class="col-xs-3 col-md-2" style="position: fixed;right: 0;top:0; padding: 0;">
+      <ul class="list-group" style="overflow-y:scroll;overflow-x: hidden;height:530px">
 	<li class="list-group-item" ng-repeat="user in users" title="{{ user.username }}">
 	  <span class="" style="font-size:0.5em">{{ user.created_on }}</span>
 	  <div class="hide">{{ user._id}}</div>
@@ -63,10 +38,29 @@
 	</li>
       </ul>
 </div>
-<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+<div class="col-xs-3 col-md-2" style="background: gray;position: fixed;left: 0; top:0;padding: 0;">
+      <ul class="list-group" style="overflow-y:scroll;overflow-x: hidden;height:530px">
+	<li class=""><h4 class="text-muted">KashCandiApp</h4></li>
+	<li
+	class="list-group-item"
+	ng-repeat="item in data"
+	ng-style="
+	{
+	  'height' : 'auto',
+	  'margin' : '10px',
+	  'float' : 'left'
+	}"
+	title="{{item.artist.name}} - {{item.title}}"
+	data-file="{{item.file}}"
+      >
+	<div class="pull-left"><img ng-style="{ 'width' : '40px' }" src="{{item.image}}" /></div>
+	<div class="pull-left" style="width: 90px;margin-left: 10px;font-size: 12px">{{item.title}}</div>
+      </ul>
+    </div>
+<div class="col-xs-10 col-md-12" style="background: lightyellow;position: fixed;bottom: 0; left:0;padding: 0;">
   <div class="container-fluid">
     <div class="row-fluid">
-      <audio-player></audio-player>
+      <audio-player class="col-xs-8 col-sm-10 col-md-16"></audio-player>
     </div>
   </div>
-</nav>
+</div>

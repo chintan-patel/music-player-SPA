@@ -15,7 +15,6 @@ module.exports.socketConnection =  function(socket, s3Client)
     else
     {
       listObjects.push(data.Contents);
-      console.log(data.Contents);
     }
   });
   
@@ -39,7 +38,7 @@ module.exports.socketConnection =  function(socket, s3Client)
   // notify other clients that a new user has joined
   socket.broadcast.emit('user:join', {
     username : socket.id,
-    created_on :  new Date().toDateString() + " " + new Date().toTimeString()
+    created_on :  new Date().toDateString()
   });
   
   socket.on('audio.set',function(data){

@@ -10,7 +10,7 @@ var UserSchema   = new Schema({
 	salt: String,
 	first_name: String,
 	last_name: String,
-	created_on:  {type: Date, default: Date.now},
+	created_on:  {type: Date, default: Date.now}
 });
 
 UserSchema.pre('save', function(next) {

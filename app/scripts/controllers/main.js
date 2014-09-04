@@ -15,10 +15,19 @@ angular.module('musicPlayerApp')
   $scope.online_users=[];
   $scope.lists=[];
   $scope.syncAudio = false;
-  $http.get('http://localhost:3000/api/user')
+  $http.get('/api/user')
       .success(function(data, status, headers, config)
       {
 	$scope.users= data;
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $scope.error = data;
+      });
+    $http.get('/api/audio')
+      .success(function(data, status, headers, config)
+      {
+	$scope.lists= data;
       })
       .error(function(data, status, headers, config)
       {
@@ -34,7 +43,6 @@ angular.module('musicPlayerApp')
   };
   
   $scope.updateUser = function(data){
-    console.log(data);
     $http.put('http://localhost:3000/api/user/'+data._id, data)
       .success(function(data, status, headers, config)
       {
@@ -105,20 +113,14 @@ angular.module('musicPlayerApp')
   });
   socket.on('user:connected',function(data){
     $scope.data.push(data.song);
-    console.log($scope.online_users);
-    console.log(data.user);
     $scope.online_users.push(data.user);
-    console.log($scope.online_users);
-    $scope.lists = data.listObjects;
     updateTrack();
   });
   socket.on('user:disconnected',function(data){
     $scope.online_users.push(data.username+  '  disconnected');
   });
   socket.on('user:join',function(data){
-    console.log($scope.online_users);
     $scope.online_users.push(data);
-    console.log($scope.online_users);
   });
 })
 .controller('SignUpController', function ($scope, $location, $http, $rootScope, $routeParams) {
@@ -147,17 +149,14 @@ angular.module('musicPlayerApp')
   $scope.login = function() {
     if ($scope.user != undefined) {
       var data = {'username' : $scope.user.username, 'password' : $scope.user.password };
-      console.log(data);
       $http.post('/api/login', data)
       .success(function(data, status, headers, config)
       {
 	  $location.path('/home');
-	  console.log(data);
       })
       .error(function(data, status, headers, config)
       {
 	  $location.path('/login');
-	  console.log(data);
       });
     }
   }

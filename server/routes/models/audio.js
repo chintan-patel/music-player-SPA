@@ -2,14 +2,12 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var AudioSchema   = new Schema({
-	name: String
-});
+	name: String,
+	user_id: String,
+	key: String,
+	image: String,
+	created_on:  {type: Date, default: Date.now}
 
-AudioSchema.methods.getName = function () {
-  var greeting = this.name
-    ? "Meow name is " + this.name
-    : "I don't have a name"
-  return greeting;
-}
+});
 
 module.exports = mongoose.model('Audio', AudioSchema);
