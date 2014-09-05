@@ -10,8 +10,9 @@ angular.module('musicPlayerApp')
 .controller('MainController', function ($scope, $http, $rootScope, socket, $upload) {
   $scope.currentTrack = 0;
   $scope.pageSize = 50;
-  $scope.data=[];
+  $scope.playlist=[];
   $scope.users=[];
+  $scope.upload_model=[];
   $scope.online_users=[];
   $scope.lists=[];
   $scope.syncAudio = false;
@@ -24,7 +25,7 @@ angular.module('musicPlayerApp')
       {
 	  $scope.error = data;
       });
-    $http.get('/api/audio')
+  $http.get('/api/audio')
       .success(function(data, status, headers, config)
       {
 	$scope.lists= data;
@@ -35,12 +36,24 @@ angular.module('musicPlayerApp')
       });
   var updateTrack = function(){
     $scope.syncAudio = true;
-    $rootScope.$broadcast('audio.set',  $scope.data[$scope.currentTrack].file,
-      $scope.data[$scope.currentTrack],
+    $rootScope.$broadcast('audio.set',  $scope.playlist[$scope.currentTrack].file,
+      $scope.playlist[$scope.currentTrack],
       $scope.currentTrack,
-      $scope.data.length
+      $scope.playlist.length
     );
   };
+  
+  $scope.add = function(data){
+    $scope.playlist.push(data);
+  };
+  
+  $scope.clear = function(){
+    $scope.playlist = [];
+  };
+  $scope.deleteAudio = function(index){
+    $scope.playlist.splice(index,1);
+  };
+  
   
   $scope.updateUser = function(data){
     $http.put('http://localhost:3000/api/user/'+data._id, data)
@@ -58,17 +71,18 @@ angular.module('musicPlayerApp')
     for (var i = 0; i < $files.length; i++) {
 	var file = $files[i];
 	$scope.upload = $upload.upload({
-	    url: 'http://localhost:3000/upload', //upload.php script, node.js route, or servlet url
+	    url: '/api/upload', //upload.php script, node.js route, or servlet url
 	    method: 'POST',
-	    headers: {'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Method' : '*'},
-	    // withCredentials: true,
-	    data: {myObj: $rootScope.myModelObj}
+	    data:  {playlist : $scope.myModelObj},
+	    file: file
 	})
         .progress(function(evt) {
             console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
         })
         .success(function(data, status, headers, config) {
-	    console.log(data);
+	  console.log(data);
+	    //$scope.lists.push(data);
+	    console.log($scope.lists);
         })
         .error(function(data,status , headers){
 	    console.log(data);
@@ -79,27 +93,27 @@ angular.module('musicPlayerApp')
 
   $rootScope.$on('audio.next', function(){
     $scope.currentTrack++;
-    if ($scope.currentTrack < $scope.data.length){
+    if ($scope.currentTrack < $scope.playlist.length){
 	updateTrack();
     }else{
-	$scope.currentTrack=$scope.data.length-1;
+	$scope.currentTrack=$scope.playlist.length-1;
     }
   });
   
   socket.on('song:add', function(data){
-    $scope.data.push(data);
+    $scope.playlist.push(data);
     updateTrack();
   });
 
   $rootScope.$on('audio.add',function(data){
     data = {
-      'title': 'SONG TITLE',
-      'artist': {'name': 'ARTIST NAME'},
+      'name': 'SONG TITLE',
+      'user_id': {'name': 'ARTIST NAME'},
       'image': 'images/1920x1080_75.jpeg',
-      'file': '83-pahadi_thumri-sample_52745.mp3'
+      'key': '83-pahadi_thumri-sample_52745.mp3'
     };
     
-    $scope.data.push(data);
+    $scope.playlist.push(data);
     updateTrack();
     socket.emit('song:add',data,function(){});
   });
@@ -112,7 +126,7 @@ angular.module('musicPlayerApp')
     }
   });
   socket.on('user:connected',function(data){
-    $scope.data.push(data.song);
+    $scope.playlist.push(data.song);
     $scope.online_users.push(data.user);
     updateTrack();
   });

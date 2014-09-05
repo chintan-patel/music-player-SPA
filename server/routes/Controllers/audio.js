@@ -26,12 +26,12 @@ module.exports = function(router) {
 		res.json({message: 'Not Added'});
 	    }
 	    // save the audio and check for errors
-	    audio.save(function(err) {
+	    audio.save(function(err, data) {
 		if (err) 
 		{
 		    res.send(err);
 		}
-		res.json({ message: 'Audio created!' });
+		res.send(data);
 	    });
 	});
 	

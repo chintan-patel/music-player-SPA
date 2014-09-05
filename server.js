@@ -11,6 +11,7 @@ var io = require('socket.io').listen(server);
 var AWS = require('aws-sdk');
 var mongoose   = require('mongoose');
 var bodyParser= require('body-parser');
+var busboy = require('connect-busboy');
 var cookieParser = require('cookie-parser');
 var session = require('express-session')
 var port    = parseInt(process.env.PORT, 10) || 3000;
@@ -39,11 +40,13 @@ app.use(connect.urlencoded());
 app.use(express.static('app'));
 app.use(cookieParser());
 app.use(bodyParser());
+app.use(busboy());
 app.use(session({ 
     secret: process.env.SESSION_SECRET || 'secret', 
     resave: false,
     saveUninitialized: false
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -77,6 +80,7 @@ app.get('/',function(req, res){
 require('./server/routes/controllers/user.js')(router);
 require('./server/routes/controllers/login.js')(router,passport);
 require('./server/routes/controllers/audio.js')(router); 
+require('./server/routes/controllers/upload.js')(router);
 require('./server/routes/controllers/playlist.js')(router); 
 
 // Socket.io Communication

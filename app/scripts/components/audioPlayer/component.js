@@ -10,7 +10,7 @@ angular.module('audioPlayer-directive', [])
                 // tell others to give me my prev/next track (with audio.set message)
                 $scope.next = function(){ $rootScope.$broadcast('audio.next'); };
                 $scope.prev = function(){ $rootScope.$broadcast('audio.prev'); };
-                $scope.add= function(){ $rootScope.$broadcast('audio.add'); };
+            //    $scope.add= function(){ $rootScope.$broadcast('audio.add'); };
 
                 // tell audio element to play/pause, you can also use $scope.audio.play() or $scope.audio.pause();
                 $scope.playpause = function(){
