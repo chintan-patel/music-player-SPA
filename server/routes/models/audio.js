@@ -6,6 +6,7 @@ var AudioSchema   = new Schema({
 	user_id: String,
 	key: String,
 	image: String,
+	delete: {type: Boolean, default: false},
 	created_on:  {type: Date, default: Date.now}
 
 });

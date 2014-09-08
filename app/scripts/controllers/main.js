@@ -10,6 +10,8 @@ angular.module('musicPlayerApp')
 .controller('MainController', function ($scope, $http, $rootScope, socket, $upload) {
   $scope.currentTrack = 0;
   $scope.pageSize = 50;
+  $scope.alert= false;
+  $scope.alert.message = '';
   $scope.playlist=[];
   $scope.users=[];
   $scope.upload_model=[];
@@ -50,13 +52,9 @@ angular.module('musicPlayerApp')
   $scope.clear = function(){
     $scope.playlist = [];
   };
-  $scope.deleteAudio = function(index){
-    $scope.playlist.splice(index,1);
-  };
-  
   
   $scope.updateUser = function(data){
-    $http.put('http://localhost:3000/api/user/'+data._id, data)
+    $http.put('/api/user/'+data._id, data)
       .success(function(data, status, headers, config)
       {
 	$scope.users= data;
@@ -66,6 +64,22 @@ angular.module('musicPlayerApp')
 	  $scope.error = data;
       });
   };
+  
+  $scope.deleteAudio = function(id){
+    $http.delete('/api/audio/'+id)
+      .success(function(data, status, headers, config)
+      {
+	console.log(data);
+	$scope.alert.message = 'Updated'
+	$scope.alert = true;
+	delete $scope.lists[data._id];
+	
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $scope.error = data;
+      });
+  }
   
   $scope.onFileSelect = function($files) {
     for (var i = 0; i < $files.length; i++) {
@@ -81,12 +95,15 @@ angular.module('musicPlayerApp')
         })
         .success(function(data, status, headers, config) {
 	  console.log(data);
+	  $scope.alert = true;
 	    //$scope.lists.push(data);
+	    $scope.lists[data._id] = data;
 	    console.log($scope.lists);
+	    
         })
         .error(function(data,status , headers){
-	    console.log(data);
-	    console.log(status);
+	   $scope.alert = true;
+	   $scope.alert.message = data;
         });
     }
   };

@@ -2,7 +2,8 @@ var Audio = require(__dirname + '/../models/audio.js');
 
 module.exports = function(router) {
     router.get('/audio', function(req, res) {
-	Audio.find( {} ,function(err, audios) {
+	console.log('hello');
+	Audio.find( { "delete" : false }, function(err, audios) {
 		var Map= {};
 		audios.forEach(function(audio) {
 		    Map[audio._id] = audio;
@@ -52,5 +53,18 @@ module.exports = function(router) {
 		    res.json({ message: 'Audio Updated!' });
 		});
 	    });
-	});
+	})
+	.delete(function(req,res){
+	    Audio.findById( req.params.audio_id, function(err, audio) {
+		audio.delete = true;
+		
+		audio.save(function(err, audio){
+		    if (err) {
+			res.send(err);
+		    }
+		    res.json(audio);
+		});
+	    });
+	})
+	;
 };

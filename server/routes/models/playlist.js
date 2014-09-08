@@ -3,7 +3,8 @@ var Schema       = mongoose.Schema;
 
 var PlaylistSchema   = new Schema({
 	name: String,
-	audio_ids: Array
+	audio_ids: Array,
+	delete: { type: Boolean, default: false}
 });
 
 PlaylistSchema.methods.getAudioIds = function () {
