@@ -24,7 +24,11 @@ var app = angular
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainController'
+        controller: 'MainController',
+        resolve :{
+          loadUserData: MainController.loadUserData,
+          loadAudioData: MainController.loadAudioData
+        }
       })
       .when('/login', {
         templateUrl: 'views/login.html',
@@ -38,3 +42,11 @@ var app = angular
         redirectTo: '/'
       });
   });
+  
+  app.controller("ErrorController", function($rootScope){
+    $rootScope.$on("$routeChangeError", function(event, current, previous, rejection){
+        $rootScope.error= rejection;
+      })
+    });
+  
+ 

@@ -1,13 +1,46 @@
 'use strict';
   
-angular.module('musicPlayerApp')
-  .filter('startFrom', function() {
-    return function(input, start) {
-      start = +start; //parse to int
-      return input.slice(start);
-    };
-  })
-.controller('MainController', function ($scope, $http, $rootScope, socket, $upload) {
+var SignUpController = app.controller('SignUpController', function ($scope, $location, $http, $rootScope, $routeParams) {
+  $scope.signup = function(){
+    var first_name = $scope.user.name;
+    var last_name = $scope.user.name;
+    
+    $scope.user.first_name = name.substr(0,$scope.user.name.indexOf(' '));
+    $scope.user.last_name = name.substr($scope.user.name.indexOf(' ')+1);
+    
+    if ($scope.user != undefined) {
+      $http.post('/api/user', $scope.user)
+      .success(function(data, status, headers, config)
+      {
+	$location.path('/home');
+
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $scope.error = data;
+      });
+    }
+  }
+});
+
+var LoginController= app.controller('LoginController', function ($scope, $http, $rootScope, $routeParams) {
+  $scope.login = function() {
+    if ($scope.user != undefined) {
+      var data = {'username' : $scope.user.username, 'password' : $scope.user.password };
+      $http.post('/api/login', data)
+      .success(function(data, status, headers, config)
+      {
+	  $location.path('/home');
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $location.path('/login');
+      });
+    }
+  }
+});
+
+var MainController = app.controller('MainController', function ($scope, $route, $http, $rootScope, socket, $upload) {
   $scope.currentTrack = 0;
   $scope.pageSize = 50;
   $scope.alert= false;
@@ -18,24 +51,10 @@ angular.module('musicPlayerApp')
   $scope.online_users=[];
   $scope.lists=[];
   $scope.syncAudio = false;
-  $http.get('/api/user')
-      .success(function(data, status, headers, config)
-      {
-	$scope.users= data;
-      })
-      .error(function(data, status, headers, config)
-      {
-	  $scope.error = data;
-      });
-  $http.get('/api/audio')
-      .success(function(data, status, headers, config)
-      {
-	$scope.lists= data;
-      })
-      .error(function(data, status, headers, config)
-      {
-	  $scope.error = data;
-      });
+  
+  // PreLoad User data
+  $scope.users = $route.current.locals.loadUserData;
+  $scope.lists = $route.current.locals.loadAudioData;
   var updateTrack = function(){
     $scope.syncAudio = true;
     $rootScope.$broadcast('audio.set',  $scope.playlist[$scope.currentTrack].file,
@@ -69,7 +88,6 @@ angular.module('musicPlayerApp')
     $http.delete('/api/audio/'+id)
       .success(function(data, status, headers, config)
       {
-	console.log(data);
 	$scope.alert.message = 'Updated'
 	$scope.alert = true;
 	delete $scope.lists[data._id];
@@ -91,14 +109,12 @@ angular.module('musicPlayerApp')
 	    file: file
 	})
         .progress(function(evt) {
-            console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+//            console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
         })
         .success(function(data, status, headers, config) {
-	  console.log(data);
 	  $scope.alert = true;
 	    //$scope.lists.push(data);
 	    $scope.lists[data._id] = data;
-	    console.log($scope.lists);
 	    
         })
         .error(function(data,status , headers){
@@ -153,42 +169,35 @@ angular.module('musicPlayerApp')
   socket.on('user:join',function(data){
     $scope.online_users.push(data);
   });
-})
-.controller('SignUpController', function ($scope, $location, $http, $rootScope, $routeParams) {
-  $scope.signup = function(){
-    var first_name = $scope.user.name;
-    var last_name = $scope.user.name;
-    
-    $scope.user.first_name = name.substr(0,$scope.user.name.indexOf(' '));
-    $scope.user.last_name = name.substr($scope.user.name.indexOf(' ')+1);
-    
-    if ($scope.user != undefined) {
-      $http.post('/api/user', $scope.user)
-      .success(function(data, status, headers, config)
-      {
-	$location.path('/home');
-
-      })
-      .error(function(data, status, headers, config)
-      {
-	  $scope.error = data;
-      });
-    }
-  }
-})
-.controller('LoginController', function ($scope, $http, $rootScope, $routeParams) {
-  $scope.login = function() {
-    if ($scope.user != undefined) {
-      var data = {'username' : $scope.user.username, 'password' : $scope.user.password };
-      $http.post('/api/login', data)
-      .success(function(data, status, headers, config)
-      {
-	  $location.path('/home');
-      })
-      .error(function(data, status, headers, config)
-      {
-	  $location.path('/login');
-      });
-    }
-  }
 });
+
+MainController.loadAudioData =   function($q, $http){
+    var defer = $q.defer();
+    $http.get('/api/audio')
+      .success(function(data, status, headers, config)
+      {
+	  defer.resolve(data);
+      })
+      .error(function(data, status, headers, config)
+      {
+	  defer.reject('Cannot Connect: Network Issues');
+      });
+  return defer.promise;
+}
+
+
+MainController.loadUserData =   function($q, $http){
+    var defer = $q.defer();
+    $http.get('/api/user')
+      .success(function(data, status, headers, config)
+      {
+        defer.resolve(data);
+      })
+      .error(function(data, status, headers, config)
+      {
+	  defer.reject('Cannot Connect: Network Issues');
+      });
+      return defer.promise;
+}
+
+
