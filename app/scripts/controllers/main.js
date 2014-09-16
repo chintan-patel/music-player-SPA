@@ -49,9 +49,19 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   $scope.users=[];
   $scope.upload_model=[];
   $scope.online_users=[];
+  $scope.new_users=[];
   $scope.lists=[];
   $scope.syncAudio = false;
+  $scope.files= [];
   
+  $scope.isUploadVisible = false;
+  $scope.isOnlineUserVisible= false;
+  
+  $scope.showOnlineUsers = function(){
+    
+      $scope.new_users.length = 0;
+      $scope.isOnlineUserVisible = !$scope.isOnlineUserVisible
+  };
   // PreLoad User data
   $scope.users = $route.current.locals.loadUserData;
   $scope.lists = $route.current.locals.loadAudioData;
@@ -100,6 +110,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   }
   
   $scope.onFileSelect = function($files) {
+    $scope.files = $files;
     for (var i = 0; i < $files.length; i++) {
 	var file = $files[i];
 	$scope.upload = $upload.upload({
@@ -112,9 +123,9 @@ var MainController = app.controller('MainController', function ($scope, $route, 
 //            console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
         })
         .success(function(data, status, headers, config) {
-	  $scope.alert = true;
-	    //$scope.lists.push(data);
+	    $scope.alert = true;
 	    $scope.lists[data._id] = data;
+	    $scope.files.length = $scope.files.length - 1;
 	    
         })
         .error(function(data,status , headers){
@@ -165,12 +176,14 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   });
   socket.on('user:disconnected',function(data){
     $scope.online_users.push(data.username+  '  disconnected');
+    $scope.new_users.length = $scope.new_users.length - 1;
   });
   socket.on('user:join',function(data){
     $scope.online_users.push(data);
+    $scope.new_users.push(data);
+
   });
 });
-
 MainController.loadAudioData =   function($q, $http){
     var defer = $q.defer();
     $http.get('/api/audio')
@@ -191,7 +204,7 @@ MainController.loadUserData =   function($q, $http){
     $http.get('/api/user')
       .success(function(data, status, headers, config)
       {
-        defer.resolve(data);
+	  defer.resolve(data);
       })
       .error(function(data, status, headers, config)
       {

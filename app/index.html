@@ -12,29 +12,31 @@
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.scss">
+    <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="scripts/components/audioPlayer/component.css">
     <!-- endbuild -->
     
   </head>
-  <body ng-app="musicPlayerApp" ng-controller="ErrorController">
+  <body ng-app="musicPlayerApp" ng-controller="ErrorController" style="background: url('./images/noise-red.jpg');">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
       <!-- Add your site or application content here -->
       <div class="header">
-	  <ul class="nav nav-pills" style="margin-left:300px">
+	  <ul class="nav nav-pills">
+	    <li class=""><h4 class="text-muted">KashCandiApp</h4></li>
 	      <li class=""><a ng-href="#">Home</a></li>
 	      <li class=""><a ng-href="/#/login">Login</a></li>
 	      <li class=""><a ng-href="/#/signup">Sign up</a></li>
 	  </ul>
       </div>
-      <div class="alert alert-danger" ng-model="error">{{ error }}</div>
-      <div class="container-fluid">
-	  <div class="row-fluid">
-	      <div ng-view class="col-xs-8 col-sm-10 col-md-16"></div>
+      <div class="container">
+	  <div class="row">
+	    <span ng-show="isViewLoading"><div class="loading_view alert alert-info">Loading</div></span>
+	      <div class="alert alert-danger" ng-show="error.length && !isViewLoading" ng-model="error">{{ error }}</div>
+	      <div ng-view class="body"></div>
 	  </div>
       </div>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->

@@ -1,74 +1,65 @@
-<div class="col-xs-12 col-sm-6 col-md-8 pull-right">
-  <div class="well uploader">
-    <input type="text" ng-model="myModelObj" value="" placeholder="Enter Filename">
-    <input type="file" multiple ng-file-select="onFileSelect($files)" >
-    <button class="" ng-click="upload.abort()">Cancel Upload</button>
-    <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class"
-      ng-show="dropSupported" style="background: lightblue;text-align: center;padding: 10px;border: 1px solid saddlebrown;margin: 20px auto;color: white;">drop files here</div>
-    <div ng-file-drop-available="dropSupported=true" 
-	ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
-  </div>
-  
-    <ul class="list-group clearfix">
-      <li
-	class="list-group-item"
-	ng-repeat="each_list in lists"
-	data-file="{{ each_list.key }}">
+<div class="col-xs-12 col-sm-6 col-md-16">
+    <ul class="list-group">
+      <li class="list-group-item clearfix"	ng-repeat="each_list in lists" data-file="{{ each_list.key }}">
 	<div class="btn btn-link" ng-click="add(each_list)"><i class="glyphicon glyphicon-plus"></i></div>
 	{{ each_list.name }}
 	<div class="pull-right btn btn-link" ng-click="deleteAudio(each_list._id)"><i class="glyphicon glyphicon-remove"></i></div>
 	<div class="pull-right btn btn-link" ng-click="editAudio(each_list._id)"><i class="glyphicon glyphicon-edit"></i></div
       </li>
     </ul>
+    <a class="btn btn-primary" ng-hide="isUploadVisible" ng-click="isUploadVisible = !isUploadVisible">Upload</a>
+    <div class="well uploader" ng-show="isUploadVisible">
+      <button class="btn-link pull-right" ng-click = "isUploadVisible = !isUploadVisible" ><i class="glyphicon glyphicon-remove"></i></button>
+      <label class="btn btn-primary" for="upload_files">Add Files</label>
+      <input id="upload_files" style="position:absolute; left:-9999px;" type="file" multiple ng-file-select="onFileSelect($files)" >
+      <button class="btn-link pull-right" ng-show="files.length" ng-click="upload.abort()">Cancel Upload</button>
+      <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class"
+	ng-show="dropSupported" style="background: lightseagreen;text-align: center;padding: 10px;border: 1px solid lightseagreen;margin: 20px auto;color: white;">Drag Files</div>
+      <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
+    </div>
 </div>
-<div class="col-xs-2 col-md-1 pull-right">
+
+
+<div class="col-xs-12 col-sm-6 col-md-16">
       <ul class="list-group">
-	<li class="list-group-item" ng-repeat="user in online_users" title="{{ user.username }}">
-	  <span class="" style="font-size:0.5em">{{ user.created_on }}</span>
-	  <span class="id hide">{{ user._id}}</span>
-	  {{ user.username }}
-	  <div class='btn' ng-click="deleteUser(user)">delete</div>
-	  <div class='btn' ng-click="updateUser(user)">edit</div>
-	</li>
-      </ul>
-</div>
-<div class="col-xs-3 col-md-2" style="position: fixed;right: 0;top:0; padding: 0;">
-      <ul class="list-group" style="overflow-y:scroll;overflow-x: hidden;height:530px">
-	<li class="list-group-item" ng-repeat="user in users" title="{{ user.username }}">
-	  <span class="" style="font-size:0.5em">{{ user.created_on }}</span>
-	  <div class="hide">{{ user._id}}</div>
-	  <div class="">{{ user.first_name}} {{ user.last_name }}</div>
-	  <div class="">{{ user.username }}</div>
-	  <div class='btn' ng-click="deleteUser(user)">delete</div>
-	  <div class='btn-primary btn' ng-click="updateUser(user)">edit</div>
-	</li>
-      </ul>
-</div>
-<div class="col-xs-3 col-md-2" style="background: gray;position: fixed;left: 0; top:0;padding: 0;">
-      <ul class="list-group" style="overflow-y:scroll;overflow-x: hidden;height:530px">
-	<li class=""><h4 class="text-muted">KashCandiApp</h4></li>
-	<li class="btn" ng-click="clear()">clear</li>
+	<li class="list-group-item clearfix" ng-click="clear()"><div class="btn-link pull-right">clear</div></li>
 	<li
-	class="list-group-item"
+	class="list-group-item clearfix"
 	ng-repeat="item in playlist"
-	ng-style="
-	{
-	  'height' : 'auto',
-	  'margin' : '10px',
-	  'float' : 'left'
-	}"
+	
 	title="{{item.name}}"
 	data-file="{{item.key}}"
       >
 	<div class="pull-left"><img ng-style="{ 'width' : '40px' }" src="{{item.image}}" /></div>
 	<div class="pull-left" style="width: 90px;margin-left: 10px;font-size: 12px">{{item.name}}</div>
-	<div class="pull-left" style="position: absolute;top: 5px;right: 10px;" ng-click="deleteAudio($index)">x</div>
+	<div class="pull-left" style="position: absolute;top: 5px;right: 10px;" ng-click="deleteAudio($index)"><i class="glyphicon glyphicon-remove"></i></div>
+      </ul>
+</div>
+<div class="col-xs-12 col-sm-6 col-md-16">
+    <a class="btn-link" ng-hide="isOnlineUserVisible" ng-click="showOnlineUsers()">Online Users <label ng-show="new_users.length" class="highlight">{{ new_users.length }}</label></a>
+    <div class="online_users" ng-show="isOnlineUserVisible">
+      <ul class="list-group">
+	<li class="close_button clearfix"><span class="pull-right"><button class="btn-link" ng-click = "showOnlineUsers()" ><i class="glyphicon glyphicon-remove"></i></button></span></li>
+	<li class="list-group-item clearfix" ng-repeat="user in online_users" title="{{ user.username }}">
+	  <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>
+	  <span class="id hide">{{ user._id}}</span>
+	  <div class="user_name">{{ user.username }}</div>
+	</li>
       </ul>
     </div>
-<div class="col-xs-10 col-md-12" style="background: lightyellow;position: fixed;bottom: 0; left:0;padding: 0;">
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <audio-player class="col-xs-8 col-sm-10 col-md-16"></audio-player>
-    </div>
-  </div>
+    <ul class="list-group registered_user_list" >
+	<li class="list-group-item clearfix" ng-repeat="user in users" title="{{ user.username }}">
+	  <div class="edit-delete pull-right">
+	    <span ng-click="deleteUser(user)"><i class="glyphicon glyphicon-remove"></i></span>
+	    <span ng-click="updateUser(user)"><i class="glyphicon glyphicon-edit"></i></span>
+	  </div>
+	  <div class="">
+	    <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>
+	    <div class="hide">{{ user._id}}</div>
+	    <div class="">{{ user.first_name}} {{ user.last_name }}</div>
+	    <div class="">{{ user.username }}</div>
+	  </div>
+	</li>
+      </ul>
 </div>
+<audio-player class="clearfix"></audio-player>

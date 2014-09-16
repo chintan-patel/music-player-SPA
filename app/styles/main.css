@@ -1,6 +1,6 @@
 $icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 // bower:scss
-@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+//@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
 // endbower
 
 .browsehappy {
@@ -14,6 +14,7 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/font
 body {
   padding-top: 20px;
   padding-bottom: 20px;
+  background: url('../images/noise-red.jpg');
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -68,12 +69,6 @@ body {
   }
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  .container {
-    max-width: 730px;
-  }
-
   /* Remove the padding we set earlier */
   .header,
   .marketing,
@@ -104,4 +99,52 @@ body {
     background-color: #eee;
     background-size: cover;
     border: 1px solid #333;
+}
+ul.registered_user_list {
+  margin-top:20px;
+}
+ul.registered_user_list li div.edit-delete{
+  display:none;
+}
+ul.registered_user_list li:hover div.edit-delete{
+  display:block;
+}
+
+.online_users{
+  border: 1px solid #dedede;
+}
+.online_users .list-group-item{
+  border: 0;
+}
+.highlight{
+  background: rgb(170, 125, 68);
+  padding: 0 10px;
+  color: white;
+  border-radius: 12px;
+}
+.online_users .list-group-item .user_name{
+  word-wrap: break-word;
+}
+
+.online_users .close_button{
+  list-style-type: none;
+}
+
+audio-player{
+  padding: 20px 0px;
+  display: block;
+  background:lightgray;
+  position: fixed;
+  bottom: 0;
+  left:0;
+  width: 100%;
+}
+
+.loading_view{
+  font-size: 2.2em;
+  text-align: center;
+}
+
+.body{
+  margin-bottom: 140px;
 }

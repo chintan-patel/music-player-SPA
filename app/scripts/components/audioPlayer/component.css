@@ -15,3 +15,6 @@ audio-player * {
     -ms-user-select: none;
     user-select: none;
 }
+
+audio-player input.seekbar{
+}

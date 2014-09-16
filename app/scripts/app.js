@@ -43,9 +43,16 @@ var app = angular
       });
   });
   
-  app.controller("ErrorController", function($rootScope){
-    $rootScope.$on("$routeChangeError", function(event, current, previous, rejection){
-        $rootScope.error= rejection;
+  app.controller("ErrorController", function($scope){
+    $scope.isViewLoading = false;
+    $scope.$on('$routeChangeStart', function() {
+      $scope.isViewLoading = true;
+    });
+    $scope.$on('$routeChangeSuccess', function() {
+      $scope.isViewLoading = false;
+    });
+    $scope.$on("$routeChangeError", function(event, current, previous, rejection){
+        $scope.error= rejection;
       })
     });
   
