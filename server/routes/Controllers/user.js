@@ -2,7 +2,8 @@ var User = require(__dirname + '/../models/user.js');
 
 module.exports = function(router) {
     router.get('/user', function(req, res) {
-	User.find( {} ,function(err, users) {
+	User.find( { "delete" : false }, function(err, users) {
+
 		var Map= {};
 		users.forEach(function(user) {
 		    Map[user._id] = user;
@@ -68,5 +69,18 @@ module.exports = function(router) {
 		    res.json({ message: 'User Updated!' });
 		});
 	    });
-	});
+	})
+	.delete(function(req,res){
+	    User.findById( req.params.user_id, function(err, user) {
+		user.delete = true;
+		
+		user.save(function(err, user){
+		    if (err) {
+			res.send(err);
+		    }
+		    res.json(user);
+		});
+	    });
+	})
+	;
 };

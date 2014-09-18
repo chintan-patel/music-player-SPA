@@ -25,7 +25,6 @@ angular.module('audioPlayer-directive', [])
 
                 // set track & play it
                 $rootScope.$on('audio.set', function(r, file, info, currentNum, totalNum){
-                    console.log(file);
                     var playing = !$scope.audio.paused;
                     $scope.audio.src = file;
                     var a = playing ? $scope.audio.play() : $scope.audio.pause();

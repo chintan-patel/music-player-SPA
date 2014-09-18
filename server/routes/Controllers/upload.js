@@ -3,7 +3,7 @@ var fs = require('fs');
 var busboy = require('connect-busboy');
 
 
-module.exports = function(router) {
+module.exports = function(router, s3client) {
     
     
 // API
@@ -19,6 +19,7 @@ router.route('/upload')
 	    file.pipe(fstream);
 	    fstream.on('close', function () {
 		var audio = new Audio();
+		
 		audio.name = filename;
 		audio.key= __dirname + '/../../upload_files/' + filename;
 		audio.user_id = req.body.user_id;
@@ -31,7 +32,22 @@ router.route('/upload')
 		    {
 			res.send(err);
 		    }
-		    res.send(data);
+		    var params = {
+			Body: __dirname + '/../../upload_files/' + data.key,
+			Bucket: "dev.kashcandi.com",
+			Key: "/user_id/content/" + data._id + "/filename",
+			ACL: 'public-read'
+		    };
+		    console.log(params);
+		    s3client.putObject(params, function(err, data){
+			if (err) {
+			    console.error("unable to upload:", err.stack);
+			    res.send(err);
+			}
+			console.log("done uploading");
+			console.log(data);
+			res.send(data);
+		    });
 		});
 	    });
 	});

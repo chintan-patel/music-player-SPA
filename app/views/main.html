@@ -35,7 +35,7 @@
 	<div class="pull-left" style="position: absolute;top: 5px;right: 10px;" ng-click="deleteAudio($index)"><i class="glyphicon glyphicon-remove"></i></div>
       </ul>
 </div>
-<div class="col-xs-12 col-sm-6 col-md-16">
+<div class="col-xs-12 col-sm-16 col-md-16">
     <a class="btn-link" ng-hide="isOnlineUserVisible" ng-click="showOnlineUsers()">Online Users <label ng-show="new_users.length" class="highlight">{{ new_users.length }}</label></a>
     <div class="online_users" ng-show="isOnlineUserVisible">
       <ul class="list-group">
@@ -50,8 +50,8 @@
     <ul class="list-group registered_user_list" >
 	<li class="list-group-item clearfix" ng-repeat="user in users" title="{{ user.username }}">
 	  <div class="edit-delete pull-right">
-	    <span ng-click="deleteUser(user)"><i class="glyphicon glyphicon-remove"></i></span>
 	    <span ng-click="updateUser(user)"><i class="glyphicon glyphicon-edit"></i></span>
+	    <span ng-click="deleteUser(user._id)"><i class="glyphicon glyphicon-remove"></i></span>
 	  </div>
 	  <div class="">
 	    <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>

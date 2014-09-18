@@ -58,7 +58,6 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   $scope.isOnlineUserVisible= false;
   
   $scope.showOnlineUsers = function(){
-    
       $scope.new_users.length = 0;
       $scope.isOnlineUserVisible = !$scope.isOnlineUserVisible
   };
@@ -67,7 +66,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   $scope.lists = $route.current.locals.loadAudioData;
   var updateTrack = function(){
     $scope.syncAudio = true;
-    $rootScope.$broadcast('audio.set',  $scope.playlist[$scope.currentTrack].file,
+    $rootScope.$broadcast('audio.set',  $scope.playlist[$scope.currentTrack].key,
       $scope.playlist[$scope.currentTrack],
       $scope.currentTrack,
       $scope.playlist.length
@@ -76,6 +75,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   
   $scope.add = function(data){
     $scope.playlist.push(data);
+    updateTrack();
   };
   
   $scope.clear = function(){
@@ -107,6 +107,20 @@ var MainController = app.controller('MainController', function ($scope, $route, 
       {
 	  $scope.error = data;
       });
+  }
+  
+  $scope.deleteUser = function(id){
+    $http.delete('/api/user/'+id)
+	.success(function(data, status, headers, config)
+	{
+	  $scope.alert.message = 'Updated'
+	  $scope.alert = true;
+	  delete $scope.users[data._id];
+	})
+	.error(function(data, status, headers, config)
+	{
+	  $scope.error = data;
+	});
   }
   
   $scope.onFileSelect = function($files) {
@@ -212,5 +226,7 @@ MainController.loadUserData =   function($q, $http){
       });
       return defer.promise;
 }
+
+
 
 

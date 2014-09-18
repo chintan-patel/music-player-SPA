@@ -80,7 +80,7 @@ app.get('/',function(req, res){
 require('./server/routes/controllers/user.js')(router);
 require('./server/routes/controllers/login.js')(router,passport);
 require('./server/routes/controllers/audio.js')(router); 
-require('./server/routes/controllers/upload.js')(router);
+require('./server/routes/controllers/upload.js')(router, s3Client);
 require('./server/routes/controllers/playlist.js')(router); 
 
 // Socket.io Communication

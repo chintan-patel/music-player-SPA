@@ -21,10 +21,10 @@ module.exports.socketConnection =  function(socket, s3Client)
  var 	signedUrl = 'https://s3.amazonaws.com/dev.kashcandi.com/user/1/music/1/43c2c76a-ad09-4c77-9f3a-72b64c7f12cc';
   socket.emit('user:connected', {
     song: {
-      "title": "This is a sample of music",
-      "artist": {"name": "Chintan Patel"},
+      "name": "This is a sample of music",
       "image": "images/1920x1080_75.jpeg",
-      "file": signedUrl
+      "artist": {"name": "Chintan Patel"},
+      "key": signedUrl
     },
     user : {
 	_id : socket.id,

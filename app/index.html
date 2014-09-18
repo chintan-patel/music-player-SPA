@@ -34,9 +34,9 @@
       </div>
       <div class="container">
 	  <div class="row">
-	    <span ng-show="isViewLoading"><div class="loading_view alert alert-info">Loading</div></span>
+	    <span ng-show="isViewLoading"><div class="loading_view"><img src="images/ajax-loader.gif" /></div></span>
 	      <div class="alert alert-danger" ng-show="error.length && !isViewLoading" ng-model="error">{{ error }}</div>
-	      <div ng-view class="body"></div>
+	      <div ng-view class="body clearfix"></div>
 	  </div>
       </div>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
