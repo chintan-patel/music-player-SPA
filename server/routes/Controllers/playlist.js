@@ -3,10 +3,10 @@ var Playlist = require(__dirname + '/../models/playlist.js');
 
 module.exports = function(router) {
     router.get('/playlist', function(req, res) {
-	Playlist.find( {} ,function(err, playlists) {
-		var Map= {};
+	Playlist.find( { delete: false} ,function(err, playlists) {
+		var Map= [];
 		playlists.forEach(function(playlist) {
-		    Map[playlist._id] = playlist;
+		    Map.push( playlist );
 		});
 		res.send(Map);  
 	    });
@@ -27,12 +27,12 @@ module.exports = function(router) {
 		res.json({message: 'Not Added'});
 	    }
 	    // save the playlist and check for errors
-	    playlist.save(function(err) {
+	    playlist.save(function(err, data) {
 		if (err) 
 		{
 		    res.send(err);
 		}
-		res.json({ message: 'Playlist created!' });
+		res.send(data);
 	    });
 	});
 	
@@ -45,13 +45,14 @@ module.exports = function(router) {
 	.put(function(req,res){
 	    Playlist.findById( req.params.playlist_id, function(err, playlist) {
 		playlist.name = req.body.name;
+		playlist.delete = req.body.delete;
 		playlist.audio_ids = req.body.audio_ids;
 
-		playlist.save(function(err){
+		playlist.save(function(err, data){
 		    if (err) {
 			res.send(err);
 		    }
-		    res.json({ message: 'Playlist Updated!' });
+		    res.send( data );
 		});
 	    });
 	});

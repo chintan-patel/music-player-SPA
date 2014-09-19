@@ -1,10 +1,14 @@
 <div class="col-xs-12 col-sm-6 col-md-16">
-    <ul class="list-group">
+    <ul class="list-group audio_list">
       <li class="list-group-item clearfix"	ng-repeat="each_list in lists" data-file="{{ each_list.key }}">
-	<div class="btn btn-link" ng-click="add(each_list)"><i class="glyphicon glyphicon-plus"></i></div>
-	{{ each_list.name }}
-	<div class="pull-right btn btn-link" ng-click="deleteAudio(each_list._id)"><i class="glyphicon glyphicon-remove"></i></div>
-	<div class="pull-right btn btn-link" ng-click="editAudio(each_list._id)"><i class="glyphicon glyphicon-edit"></i></div
+	<div ng-click="add(each_list)" class="pull-left">
+	  <i class="glyphicon glyphicon-plus"></i>
+	  {{ each_list.name }}
+	</div>
+	<div class="edit-delete pull-right">
+	    <span ng-click="editAudio(each_list._id)"><i class="glyphicon glyphicon-edit"></i></span>
+	    <span ng-click="deleteAudio(each_list._id)"><i class="glyphicon glyphicon-remove"></i></span>
+	</div>
       </li>
     </ul>
     <a class="btn btn-primary" ng-hide="isUploadVisible" ng-click="isUploadVisible = !isUploadVisible">Upload</a>
@@ -22,24 +26,28 @@
 
 <div class="col-xs-12 col-sm-6 col-md-16">
       <ul class="list-group">
-	<li class="list-group-item clearfix" ng-click="clear()"><div class="btn-link pull-right">clear</div></li>
+	<li class="list-group-item clearfix"  ng-repeat="each_playlist in playlist"><a href="" ng-click="selectPlaylist($index)">{{ each_playlist.name }}</a></li>
+      </ul>
+      <ul class="list-group">
+	<li class="list-group-item clearfix" ng-show="current_playlist.audio_ids.length" ng-click="clear(current_playlist._id)"><div class="btn-link pull-right">clear {{ current_playlist.name }}</div></li>
 	<li
 	class="list-group-item clearfix"
-	ng-repeat="item in playlist"
+	ng-repeat="item in current_playlist.audio_ids"
 	
 	title="{{item.name}}"
 	data-file="{{item.key}}"
       >
+	{{item.audio_ids}}
 	<div class="pull-left"><img ng-style="{ 'width' : '40px' }" src="{{item.image}}" /></div>
 	<div class="pull-left" style="width: 90px;margin-left: 10px;font-size: 12px">{{item.name}}</div>
 	<div class="pull-left" style="position: absolute;top: 5px;right: 10px;" ng-click="deleteAudio($index)"><i class="glyphicon glyphicon-remove"></i></div>
       </ul>
 </div>
 <div class="col-xs-12 col-sm-16 col-md-16">
-    <a class="btn-link" ng-hide="isOnlineUserVisible" ng-click="showOnlineUsers()">Online Users <label ng-show="new_users.length" class="highlight">{{ new_users.length }}</label></a>
+    <a class="btn btn btn-default" ng-hide="isOnlineUserVisible" ng-click="showOnlineUsers()">Online Users <label ng-show="new_users.length" class="highlight">{{ new_users.length }}</label></a>
     <div class="online_users" ng-show="isOnlineUserVisible">
       <ul class="list-group">
-	<li class="close_button clearfix"><span class="pull-right"><button class="btn-link" ng-click = "showOnlineUsers()" ><i class="glyphicon glyphicon-remove"></i></button></span></li>
+	<li class="close_button clearfix"><span class="pull-right"><button class="btn-link" ng-click = "showOnlineUsers()" ><i class="glyphicon glyphicon-remove"></i></nutton></span></li>
 	<li class="list-group-item clearfix" ng-repeat="user in online_users" title="{{ user.username }}">
 	  <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>
 	  <span class="id hide">{{ user._id}}</span>

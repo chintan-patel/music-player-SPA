@@ -6,6 +6,7 @@ angular.module('audioPlayer-directive', [])
             controller: function($scope, $element) {
                 $scope.audio = new Audio();
                 $scope.currentNum = 0;
+                $scope.totalNum = 0;
 
                 // tell others to give me my prev/next track (with audio.set message)
                 $scope.next = function(){ $rootScope.$broadcast('audio.next'); };
@@ -31,6 +32,7 @@ angular.module('audioPlayer-directive', [])
                     $scope.info = info;
                     $scope.currentNum = currentNum;
                     $scope.totalNum = totalNum;
+                    console.log($scope.totalNum);
                 });
 
                 // update display of things - makes time-scrub work

@@ -17,7 +17,7 @@ var SignUpController = app.controller('SignUpController', function ($scope, $loc
       })
       .error(function(data, status, headers, config)
       {
-	  $scope.error = data;
+	  $rootScope.error = data;
       });
     }
   }
@@ -34,6 +34,7 @@ var LoginController= app.controller('LoginController', function ($scope, $http, 
       })
       .error(function(data, status, headers, config)
       {
+	  $rootScope.error = data;
 	  $location.path('/login');
       });
     }
@@ -41,6 +42,7 @@ var LoginController= app.controller('LoginController', function ($scope, $http, 
 });
 
 var MainController = app.controller('MainController', function ($scope, $route, $http, $rootScope, socket, $upload) {
+  $scope.current_playlist = [];
   $scope.currentTrack = 0;
   $scope.pageSize = 50;
   $scope.alert= false;
@@ -51,7 +53,6 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   $scope.online_users=[];
   $scope.new_users=[];
   $scope.lists=[];
-  $scope.syncAudio = false;
   $scope.files= [];
   
   $scope.isUploadVisible = false;
@@ -63,23 +64,59 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   };
   // PreLoad User data
   $scope.users = $route.current.locals.loadUserData;
+  $scope.playlist = $route.current.locals.loadPlaylistData;
+  
   $scope.lists = $route.current.locals.loadAudioData;
-  var updateTrack = function(){
-    $scope.syncAudio = true;
-    $rootScope.$broadcast('audio.set',  $scope.playlist[$scope.currentTrack].key,
-      $scope.playlist[$scope.currentTrack],
+  
+   var updateTrack = function(){
+    $rootScope.$broadcast('audio.set',  $scope.current_playlist.audio_ids[$scope.currentTrack].key,
+      $scope.current_playlist.audio_ids[$scope.currentTrack],
       $scope.currentTrack,
-      $scope.playlist.length
+      $scope.current_playlist.audio_ids.length
     );
   };
   
+  
+  $scope.selectPlaylist = function(id){
+    if ($scope.playlist.length <= 0) {
+      $rootScope.error = 'No Playlist added';
+    }
+    else
+    {
+      $scope.current_playlist = $scope.playlist[id];
+      $scope.currentTrack = 0;
+      if ($scope.current_playlist.audio_ids.length) {
+	updateTrack();
+      }
+      else
+      {
+	 $rootScope.error = 'Please Add audio in playlist';
+      }
+    }
+  };
   $scope.add = function(data){
-    $scope.playlist.push(data);
-    updateTrack();
+    var data_new = $scope.current_playlist;
+    data_new.audio_ids.push(data);
+    $http.put('/api/playlist/'+$scope.current_playlist._id, data_new)
+      .success(function(data, status, headers, config)
+      {
+	$scope.current_playlist = data_new;
+	for(var i =0 ; i < $scope.playlist.length; i++)
+	{
+	  if ($scope.playlist[i]._id == $scope.current_playlist._id) {
+	    $scope.playlist[i] = $scope.current_playlist;
+	  }
+	}
+	updateTrack();
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $rootScope.error = data;
+      });
   };
   
-  $scope.clear = function(){
-    $scope.playlist = [];
+  $scope.clear = function(id){
+    
   };
   
   $scope.updateUser = function(data){
@@ -90,7 +127,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
       })
       .error(function(data, status, headers, config)
       {
-	  $scope.error = data;
+	  $rootScope.error = data;
       });
   };
   
@@ -105,7 +142,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
       })
       .error(function(data, status, headers, config)
       {
-	  $scope.error = data;
+	  $rootScope.error = data;
       });
   }
   
@@ -119,7 +156,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
 	})
 	.error(function(data, status, headers, config)
 	{
-	  $scope.error = data;
+	  $rootScope.error = data;
 	});
   }
   
@@ -134,43 +171,36 @@ var MainController = app.controller('MainController', function ($scope, $route, 
 	    file: file
 	})
         .progress(function(evt) {
-//            console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
         })
         .success(function(data, status, headers, config) {
-	    $scope.alert = true;
+	    $rootScope.error = 'Success uploading ' +  data.name;
 	    $scope.lists[data._id] = data;
 	    $scope.files.length = $scope.files.length - 1;
 	    
+	    
         })
         .error(function(data,status , headers){
-	   $scope.alert = true;
-	   $scope.alert.message = data;
+	    $rootScope.error = data;
         });
     }
   };
 
   $rootScope.$on('audio.next', function(){
     $scope.currentTrack++;
-    if ($scope.currentTrack < $scope.playlist.length){
+    if ($scope.currentTrack < $scope.current_playlist.audio_ids.length){
 	updateTrack();
     }else{
-	$scope.currentTrack=$scope.playlist.length-1;
+	$scope.currentTrack=$scope.current_playlist.audio_ids.length-1;
     }
   });
   
   socket.on('song:add', function(data){
+    console.log("song:add");
     $scope.playlist.push(data);
     updateTrack();
   });
 
   $rootScope.$on('audio.add',function(data){
-    data = {
-      'name': 'SONG TITLE',
-      'user_id': {'name': 'ARTIST NAME'},
-      'image': 'images/1920x1080_75.jpeg',
-      'key': '83-pahadi_thumri-sample_52745.mp3'
-    };
-    
     $scope.playlist.push(data);
     updateTrack();
     socket.emit('song:add',data,function(){});
@@ -184,9 +214,8 @@ var MainController = app.controller('MainController', function ($scope, $route, 
     }
   });
   socket.on('user:connected',function(data){
-    $scope.playlist.push(data.song);
     $scope.online_users.push(data.user);
-    updateTrack();
+    //updateTrack();
   });
   socket.on('user:disconnected',function(data){
     $scope.online_users.push(data.username+  '  disconnected');
@@ -226,6 +255,41 @@ MainController.loadUserData =   function($q, $http){
       });
       return defer.promise;
 }
+
+
+MainController.loadPlaylistData=   function($q, $http){
+    var defer = $q.defer();
+    $http.get('/api/playlist')
+      .success(function(data, status, headers, config)
+      {
+	if (data.length <= 0) {
+	  $http.post('/api/playlist', {
+	    'name' : '\[Default Playlist\]',
+	    'audio_ids' : []
+	  })
+	  .success(function(data, status, headers, config)
+	  {
+	    var temp_array = [];
+	    temp_array.push(data);
+	    defer.resolve(temp_array);
+	  })
+	  .error(function(data, status, headers, config)
+	  {
+	    defer.reject('Cannot Connect: Network Issues');
+	  });
+	}
+	else
+	{
+	    defer.resolve(data);
+	}
+      })
+      .error(function(data, status, headers, config)
+      {
+	  defer.reject('Cannot Connect: Network Issues');
+      });
+      return defer.promise;
+}
+
 
 
 

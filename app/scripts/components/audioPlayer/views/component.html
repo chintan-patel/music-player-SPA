@@ -1,7 +1,7 @@
 <div class="col-xs-6 col-md-4 col-large-2">
     <div class="form-group">
         <button ng-disabled="currentNum == 0" class="btn btn-default prev" ng-click="prev()"><i class="glyphicon glyphicon-step-backward"></i> prev</button>
-        <button class="btn btn-default playpause" ng-click="playpause()" ng-class="{paused:audio.paused}">
+        <button class="btn btn-default playpause" ng-disabled="totalNum == 0" ng-click="playpause()" ng-class="{paused:audio.paused}">
             <span class="play-text"><i class="glyphicon glyphicon-play"></i> play</span>
             <span class="pause-text"><i class="glyphicon glyphicon-pause"></i> pause</span>
         </button>
@@ -16,13 +16,5 @@
     <label><input min="0" max="{{audio.duration}}" step="0.01" type="range" class="seekbar" ng-model="audio.currentTime" /></label>
     <div class="form-group now-playing">
         <p><img width="30" height="30" src="{{info.image}}" /> {{info.artist.name}} - {{info.name}}</p>
-    </div>
-
-</div>
-<div class="col-xs-3 col-md-2 col-large-3">
-    <div class="form-group add-new">
-        <input ng-model='syncAudio' ng-click="sync()" type="checkbox" /> Sync 
-<!--        <button class="btn btn-primary" ng-click="add()"><i class="glyphicon glyphicon-plus-sign"></i> add new</button>
--->
     </div>
 </div>

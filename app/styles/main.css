@@ -103,10 +103,10 @@ body {
 ul.registered_user_list {
   margin-top:20px;
 }
-ul.registered_user_list li div.edit-delete{
+ul.registered_user_list li div.edit-delete, ul.audio_list li div.edit-delete{
   display:none;
 }
-ul.registered_user_list li:hover div.edit-delete{
+ul.registered_user_list li:hover div.edit-delete,  ul.audio_list li:hover div.edit-delete{
   display:block;
 }
 

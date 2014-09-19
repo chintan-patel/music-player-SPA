@@ -27,6 +27,7 @@ var app = angular
         controller: 'MainController',
         resolve :{
           loadUserData: MainController.loadUserData,
+          loadPlaylistData: MainController.loadPlaylistData,
           loadAudioData: MainController.loadAudioData
         }
       })

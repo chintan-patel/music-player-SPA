@@ -1,38 +1,11 @@
 module.exports.socketConnection =  function(socket, s3Client)
 {
-  var listObjects = [];
-  var params = {
-    Bucket: 'dev.kashcandi.com', // required
-    EncodingType: 'url',
-    Prefix: 'user/1/music/1/'
-  };
-
-  s3Client.listObjects(params,function(err, data){
-    if (err)
-    {
-      console.log(err, err.stack);
-    }
-    else
-    {
-      listObjects.push(data.Contents);
-    }
-  });
-  
- var 	signedUrl = 'https://s3.amazonaws.com/dev.kashcandi.com/user/1/music/1/43c2c76a-ad09-4c77-9f3a-72b64c7f12cc';
   socket.emit('user:connected', {
-    song: {
-      "name": "This is a sample of music",
-      "image": "images/1920x1080_75.jpeg",
-      "artist": {"name": "Chintan Patel"},
-      "key": signedUrl
-    },
     user : {
 	_id : socket.id,
 	username: 'chintan-'+socket.id,
 	created_on :  new Date().toTimeString()
-    },
-    listObjects: listObjects
-    
+    }
   });
 
   // notify other clients that a new user has joined
