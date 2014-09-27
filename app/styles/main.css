@@ -1,22 +1,15 @@
-$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
-// bower:scss
-//@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
-// endbower
-
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
   color: #000;
   padding: 0.2em 0;
 }
-
 /* Space out content a bit */
 body {
   padding-top: 20px;
   padding-bottom: 20px;
   background: url('../images/noise-red.jpg');
 }
-
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
@@ -24,127 +17,141 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 }
-
 /* Custom page header */
 .header {
   border-bottom: 1px solid #e5e5e5;
-
   /* Make the masthead heading the same height as the navigation */
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
-  }
 }
-
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
+}
 /* Custom page footer */
 .footer {
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
-
 .container-narrow > hr {
   margin: 30px 0;
 }
-
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
-
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-  }
 }
-
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;
-
-  p + h4 {
-    margin-top: 28px;
-  }
 }
-
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
+.marketing p + h4 {
+  margin-top: 28px;
+}
+/* Remove the padding we set earlier */
+.header,
+.marketing,
+.footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* Space out the masthead */
+.header {
+  margin-bottom: 30px;
+}
+/* Remove the bottom border on the jumbotron for visual effect */
+.jumbotron {
+  border-bottom: 0;
 }
 .albums {
-    margin:0;
-    padding:0;
+  margin: 0;
+  padding: 0;
 }
-
 .albums li {
-    list-style:none;
-    margin:10px;
-    display:inline-block;
-    width: 120px;
-    height: 120px;
-    background-color: #eee;
-    background-size: cover;
-    border: 1px solid #333;
+  list-style: none;
+  margin: 10px;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  background-color: #eee;
+  background-size: cover;
+  border: 1px solid #333;
 }
 ul.registered_user_list {
-  margin-top:20px;
+  margin-top: 20px;
 }
-ul.registered_user_list li div.edit-delete, ul.audio_list li div.edit-delete{
-  display:none;
+ul.registered_user_list li div.edit-delete,
+ul.audio_list li div.edit-delete {
+  display: none;
 }
-ul.registered_user_list li:hover div.edit-delete,  ul.audio_list li:hover div.edit-delete{
-  display:block;
+ul.registered_user_list li:hover div.edit-delete,
+ul.audio_list li:hover div.edit-delete {
+  display: block;
 }
-
-.online_users{
+.online_users {
   border: 1px solid #dedede;
 }
-.online_users .list-group-item{
+.online_users .list-group-item {
   border: 0;
 }
-.highlight{
-  background: rgb(170, 125, 68);
+.highlight {
+  background: #aa7d44;
   padding: 0 10px;
   color: white;
   border-radius: 12px;
 }
-.online_users .list-group-item .user_name{
+.online_users .list-group-item .user_name {
   word-wrap: break-word;
 }
-
-.online_users .close_button{
+.online_users .close_button {
   list-style-type: none;
 }
-
-audio-player{
+audio-player {
   padding: 20px 0px;
   display: block;
-  background:lightgray;
+  background: lightgray;
   position: fixed;
   bottom: 0;
-  left:0;
+  left: 0;
   width: 100%;
 }
-
-.loading_view{
+.loading_view {
   font-size: 2.2em;
   text-align: center;
 }
-
-.body{
+.body {
   margin-bottom: 140px;
+}
+.playlist {
+  height: 100%;
+  width: 100px;
+  background: lightblue;
+  position: absolute;
+  top: 60px;
+  left: 0px;
+  -webkit-animation-timing-function: ease-in-out;
+  /* Chrome, Safari, Opera */
+  -webkit-transition: width .5s;
+  /* Safari */
+  transition: width .5s;
+  animation-timing-function: ease-in-out;
+  border-right: 1px solid #dedede;
+}
+.playlist li i {
+  display: none;
+}
+.playlist:hover {
+  width: 200px;
+  height: 100%;
+  background: lightblue;
+  position: absolute;
+  top: 60px;
+}
+.playlist:hover li i {
+  display: block;
 }

@@ -22,7 +22,6 @@ module.exports = function(router) {
 	    var playlist = new Playlist();
 	    playlist.name = req.body.name;
 	    playlist.audio_ids = req.body.audio_ids;
-	    console.log(req.body);
 	    if (playlist.name == undefined) {
 		res.json({message: 'Not Added'});
 	    }
@@ -38,8 +37,20 @@ module.exports = function(router) {
 	
     router.route('/playlist/:playlist_id')
 	.get(function(req,res){
-	    Playlist.findById( req.params.playlist_id, function(err, playlist) {
+	    var query = Playlist.findById(req.params.playlist_id).where('delete',false);
+	    query.exec(function(err, playlist) {
 		res.send(playlist);  
+	    });
+	})
+	.delete(function(req,res){
+	    Playlist.findById( req.params.playlist_id, function(err, playlist) {
+		playlist.delete = true;
+		playlist.save(function(err, data){
+		    if (err) {
+			res.send(err)
+		    }
+		    res.send(data);  
+		})
 	    });
 	})
 	.put(function(req,res){

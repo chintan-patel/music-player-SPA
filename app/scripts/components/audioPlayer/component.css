@@ -1,4 +1,7 @@
 /* minimal CSS to get started with component. feel free to override in main.css */
+audio-player{
+    z-index: 1;
+}
 audio-player .paused .play-text,
 audio-player .pause-text {
     display:inline-block;

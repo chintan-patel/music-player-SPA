@@ -68,6 +68,10 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   
   $scope.lists = $route.current.locals.loadAudioData;
   
+  angular.forEach($scope.lists, function(data,key){
+      data.show = false;
+  });
+  
    var updateTrack = function(){
     $rootScope.$broadcast('audio.set',  $scope.current_playlist.audio_ids[$scope.currentTrack].key,
       $scope.current_playlist.audio_ids[$scope.currentTrack],
@@ -115,8 +119,29 @@ var MainController = app.controller('MainController', function ($scope, $route, 
       });
   };
   
+  
+  $scope.toggleEditAudio= function(_id){
+    $scope.lists[_id].show = !$scope.lists[_id].show;
+  }
+  
+  
   $scope.clear = function(id){
-    
+    $http.delete('/api/playlist/'+$scope.current_playlist._id)
+      .success(function(data, status, headers, config)
+      {
+	$scope.current_playlist.length = 0;
+	for(var i =0 ; i < $scope.playlist.length; i++)
+	{
+	  if ($scope.playlist[i]._id == $scope.current_playlist._id) {
+	    $scope.playlist.splice(i,0);
+	  }
+	}
+	updateTrack();
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $rootScope.error = data;
+      })
   };
   
   $scope.updateUser = function(data){
