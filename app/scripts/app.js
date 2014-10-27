@@ -23,24 +23,28 @@ var app = angular
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainController',
-        resolve :{
-          loadUserData: MainController.loadUserData,
-          loadPlaylistData: MainController.loadPlaylistData,
-          loadAudioData: MainController.loadAudioData
-        }
+          templateUrl: 'views/main.html',
+          controller: 'MainController',
+          resolve :{
+              loadUserData: MainController.loadUserData,
+              loadPlaylistData: MainController.loadPlaylistData,
+              loadAudioData: MainController.loadAudioData
+          }
+      })
+      .when('/audio/edit/:audio_id', {
+          templateUrl: 'views/audio_edit.html',
+          controller: 'AudioController'
       })
       .when('/login', {
-        templateUrl: 'views/login.html',
-        controller: 'LoginController'
+          templateUrl: 'views/login.html',
+          controller: 'LoginController'
       })
       .when('/signup', {
-        templateUrl: 'views/signup.html',
-        controller: 'SignUpController'
+          templateUrl: 'views/signup.html',
+          controller: 'SignUpController'
       })
       .otherwise({
-        redirectTo: '/'
+          redirectTo: '/'
       });
   });
   

@@ -1,3 +1,5 @@
+<div class="alert alert-error" ng-show="errors.length" ng-repeat="error in errors">{{error}}</div>
+<div class="alert alert-success" ng-show="alert.length" ng-repeat="success in alert">{{success.message}}</div>
 <div class="col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-xs-16 col-sm-16 col-md-16">
     <ul class="list-group audio_list">
       <li class="list-group-item clearfix" ng-repeat="each_list in lists" data-file="{{ each_list.key }}">
@@ -5,19 +7,14 @@
 	  <i class="glyphicon glyphicon-plus"></i>
 	</div>
 	<div class="edit-delete pull-right">
-	    <span ng-click="toggleEditAudio(each_list._id)" ng-hide="each_list.show">
+<!--	    <span ng-click="toggleEditAudio(each_list._id)" ng-hide="each_list.show"> -->
+	    <a ng-href="/#/audio/edit/{{each_list._id}}" ng-hide="each_list.show">
 	      <i class="glyphicon glyphicon-edit"></i>
-	    </span>
+	    </a>
 	    <span ng-click="deleteAudio(each_list._id)"><i class="glyphicon glyphicon-remove"></i></span>
 	</div>
 	<span>{{ $index }}</span>
 	<span>{{ each_list.name }}</span>
-	<div ng-show="each_list.show">
-	  <input type="text" value="each_list.name" ng-model="each_list.name" />
-	  <div class="btn btn-mini btn-primary">save</div>
-	  <div class="btn btn-mini btn-default" ng-click="toggleEditAudio(each_list._id)">cancel</div>
-	</div>
-	
       </li>
     </ul>
     <div class="well">

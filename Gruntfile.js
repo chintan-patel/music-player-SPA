@@ -17,6 +17,7 @@ module.exports = function (grunt) {
   
   
   grunt.loadNpmTasks('grunt-express-server');
+  grunt.loadNpmTasks('grunt-contrib-less');
 
 
   // Time how long tasks take. Can help when optimizing build times
@@ -40,13 +41,20 @@ module.exports = function (grunt) {
       },
       server: {
         options: {
-           script: 'app/scripts/services/node_music_connect.js'
+           script: 'server.js'
         }
       }
     },
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
+      less : {
+        development: {
+          files: {
+            '<%= yeoman.app %>/styles/{,*/}*.css': '<%= yeoman.app %>/styles/{,*/}*.less'
+          }
+        },
+      },
       bower: {
         files: ['bower.json'],
         tasks: ['wiredep']
@@ -63,72 +71,11 @@ module.exports = function (grunt) {
         tasks: ['newer:jshint:test', 'karma']
       },
       compass: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['compass:server', 'autoprefixer']
+        files: ['<%= yeoman.app %>/styles/{,*/}*.{less}'],
+        tasks: ['less:development']
       },
       gruntfile: {
         files: ['Gruntfile.js']
-      },
-      livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        },
-        files: [
-          '<%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ]
-      }
-    },
-
-    // The actual grunt server settings
-    connect: {
-      options: {
-        port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
-        livereload: 35729
-      },
-      proxies: [{
-        context: '/upload', // the context of the data service
-        host: 'localhost', // wherever the data service is running
-        port: 3000 // the port that the data service is running on
-      }],
-      livereload: {
-        options: {
-          open: true,
-          base: [
-            '.tmp',
-            '<%= yeoman.app %>'
-          ],
-          middleware: function(connect, options, middlewares) {
-              // inject a custom middleware into the array of default middlewares
-              // this is likely the easiest way for other grunt plugins to
-              // extend the behavior of grunt-contrib-connect
-              middlewares.push(function(req, res, next) {
-                  res.setHeader('Access-Control-Allow-Origin', '*');
-                  res.setHeader('Access-Control-Allow-Methods', '*');
-                  return next();
-              });
-              return middlewares;
-          }
-        }
-      },
-      test: {
-        options: {
-          port: 9001,
-          base: [
-            '.tmp',
-            'test',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
-      dist: {
-        options: {
-          open: true,
-          base: '<%= yeoman.dist %>'
-        }
       }
     },
 
@@ -197,7 +144,7 @@ module.exports = function (grunt) {
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
-        sassDir: '<%= yeoman.app %>/styles',
+        lessDir: '<%= yeoman.app %>/styles',
         cssDir: '.tmp/styles',
         generatedImagesDir: '.tmp/images/generated',
         imagesDir: '<%= yeoman.app %>/images',
@@ -417,13 +364,13 @@ module.exports = function (grunt) {
     }
 
     grunt.task.run([
-      'clean:server',
+//      'clean:server',
 //      'wiredep',
-      'configureProxies:server',
-      'express',
+//      'configureProxies:server',
+//      'express',
 //      'concurrent:server',
 //      'autoprefixer',
-      'connect:livereload',
+//      'connect:livereload',
       'watch'
     ]);
   });

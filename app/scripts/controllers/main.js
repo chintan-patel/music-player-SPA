@@ -23,6 +23,35 @@ var SignUpController = app.controller('SignUpController', function ($scope, $loc
   }
 });
 
+var AudioController= app.controller('AudioController', function ($q, $scope, $http, $location, $rootScope, $routeParams) {
+  $scope.audio = [];
+  $scope.$on('$routeChangeSuccess', function() {
+      $http.get('/api/audio/' + $routeParams.audio_id)
+      .success(function(data, status, headers, config)
+      {
+	  $scope.audio = data;
+      })
+      .error(function(data, status, headers, config)
+      {
+	  $scope.audio = data;
+      });
+  });
+  
+  
+  $scope.updateAudio = function(index){
+    $http.put('/api/audio/' + index, $scope.audio)
+      .success(function(data, status, headers, config)
+      {
+	$location.path('/home');
+      })
+      .error(function(data, status, headers, config)
+      {
+	$location.path('/');
+      });
+  }
+});
+
+  
 var LoginController= app.controller('LoginController', function ($scope, $http, $rootScope, $routeParams) {
   $scope.login = function() {
     if ($scope.user != undefined) {
@@ -45,7 +74,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
   $scope.current_playlist = [];
   $scope.currentTrack = 0;
   $scope.pageSize = 50;
-  $scope.alert= false;
+  $scope.alert= [];
   $scope.alert.message = '';
   $scope.playlist=[];
   $scope.users=[];
@@ -118,6 +147,7 @@ var MainController = app.controller('MainController', function ($scope, $route, 
 	  $rootScope.error = data;
       });
   };
+  
   
   
   $scope.toggleEditAudio= function(_id){

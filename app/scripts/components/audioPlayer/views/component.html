@@ -14,7 +14,7 @@
 <div class="col-xs-4 col-md-4 col-sm-4">
     <label>Now Playing</label>
     <label><input min="0" max="{{audio.duration}}" step="0.01" type="range" class="seekbar" ng-model="audio.currentTime" /></label>
-    <div class="form-group now-playing">
+    <div class="form-group now-playing" ng-show="info.image != null">
         <p><img width="30" height="30" src="{{info.image}}" /> {{info.artist.name}} - {{info.name}}</p>
     </div>
 </div>
