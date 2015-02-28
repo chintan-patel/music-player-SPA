@@ -16,20 +16,32 @@ var app = angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
+    'musicPlayerApp.Controllers',
+    'musicPlayerApp.Factories',
     'btford.socket-io',
     'angularFileUpload',
     'audioPlayer-directive'
   ])
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', '$resourceProvider', function ($routeProvider, $resourceProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
         controller: 'MainController',
-        resolve :{
-          loadUserData: MainController.loadUserData,
-          loadPlaylistData: MainController.loadPlaylistData,
-          loadAudioData: MainController.loadAudioData
+        templateUrl: 'views/main.html',
+        resolve: {
+          loadUserData: function (UserFactory) {
+            return UserFactory.query().$promise;
+          },
+          loadPlaylistData: function (PlaylistFactory) {
+            return PlaylistFactory.query().$promise;
+          },
+          loadAudioData: function (AudioFactory) {
+            return AudioFactory.query().$promise;
+          }
         }
+      })
+      .when('/audio/edit/:audio_id', {
+        templateUrl: 'views/audio_edit.html',
+        controller: 'AudioController'
       })
       .when('/login', {
         templateUrl: 'views/login.html',
@@ -42,19 +54,29 @@ var app = angular
       .otherwise({
         redirectTo: '/'
       });
+
+    //$httpProvider.defaults.headers.common['Authorization'] = 'Bearer '+ authorization_token;
+  }])
+  .run(function ($rootScope, $location, Auth) {
+    //watching the value of the currentUser variable.
+    $rootScope.$watch('currentUser', function (currentUser) {
+      if (!currentUser && (['/', '/login', '/logout', '/signup'].indexOf($location.path()) === -1 )) {
+        Auth.currentUser();
+      }
+    });
   });
-  
-  app.controller("ErrorController", function($scope){
+
+app.controller('ErrorController', function ($scope) {
+  $scope.isViewLoading = false;
+  $scope.errors = [];
+  $scope.$on('$routeChangeStart', function () {
+    $scope.isViewLoading = true;
+  });
+  $scope.$on('$routeChangeSuccess', function () {
     $scope.isViewLoading = false;
-    $scope.$on('$routeChangeStart', function() {
-      $scope.isViewLoading = true;
-    });
-    $scope.$on('$routeChangeSuccess', function() {
-      $scope.isViewLoading = false;
-    });
-    $scope.$on("$routeChangeError", function(event, current, previous, rejection){
-        $scope.error= rejection;
-      })
-    });
-  
- 
+  });
+  $scope.$on('$routeChangeError', function (event, current, previous, rejection) {
+    $scope.errors.push(rejection);
+  });
+});
+

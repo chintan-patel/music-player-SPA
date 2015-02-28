@@ -8,6 +8,7 @@ var UserSchema   = new Schema({
 	username: {type: String, required: true, unique: true},
 	password : {type: String, required: true},
 	salt: String,
+  delete: {type: Boolean, default: false},
 	first_name: String,
 	last_name: String,
 	created_on:  {type: Date, default: Date.now}

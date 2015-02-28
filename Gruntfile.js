@@ -7,16 +7,14 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
-var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
-
 module.exports = function (grunt) {
 
-  
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
-  
-  
-  grunt.loadNpmTasks('grunt-express-server');
+
+
+  grunt.loadNpmTasks('grunt-contrib-less');
 
 
   // Time how long tasks take. Can help when optimizing build times
@@ -31,104 +29,28 @@ module.exports = function (grunt) {
       app: require('./bower.json').appPath || 'app',
       dist: 'dist'
     },
-    express:{
-      options:{
-        port:3000,
-        delay:0,
-        output: ".+",
-        debug:true
-      },
-      server: {
-        options: {
-           script: 'app/scripts/services/node_music_connect.js'
-        }
-      }
-    },
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
-      bower: {
-        files: ['bower.json'],
-        tasks: ['wiredep']
-      },
+
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all'],
+        tasks: ['newer:jshint:all']
+        /*
         options: {
           livereload: '<%= connect.options.livereload %>'
-        }
+         }*/
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'karma']
       },
       compass: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-        tasks: ['compass:server', 'autoprefixer']
+        files: ['<%= yeoman.app %>/styles/{,*/}*.{less}'],
+        tasks: ['less:development']
       },
       gruntfile: {
         files: ['Gruntfile.js']
-      },
-      livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        },
-        files: [
-          '<%= yeoman.app %>/{,*/}*.html',
-          '.tmp/styles/{,*/}*.css',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ]
-      }
-    },
-
-    // The actual grunt server settings
-    connect: {
-      options: {
-        port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
-        livereload: 35729
-      },
-      proxies: [{
-        context: '/upload', // the context of the data service
-        host: 'localhost', // wherever the data service is running
-        port: 3000 // the port that the data service is running on
-      }],
-      livereload: {
-        options: {
-          open: true,
-          base: [
-            '.tmp',
-            '<%= yeoman.app %>'
-          ],
-          middleware: function(connect, options, middlewares) {
-              // inject a custom middleware into the array of default middlewares
-              // this is likely the easiest way for other grunt plugins to
-              // extend the behavior of grunt-contrib-connect
-              middlewares.push(function(req, res, next) {
-                  res.setHeader('Access-Control-Allow-Origin', '*');
-                  res.setHeader('Access-Control-Allow-Methods', '*');
-                  return next();
-              });
-              return middlewares;
-          }
-        }
-      },
-      test: {
-        options: {
-          port: 9001,
-          base: [
-            '.tmp',
-            'test',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
-      dist: {
-        options: {
-          open: true,
-          base: '<%= yeoman.dist %>'
-        }
       }
     },
 
@@ -197,7 +119,7 @@ module.exports = function (grunt) {
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
-        sassDir: '<%= yeoman.app %>/styles',
+        lessDir: '<%= yeoman.app %>/styles',
         cssDir: '.tmp/styles',
         generatedImagesDir: '.tmp/images/generated',
         imagesDir: '<%= yeoman.app %>/images',
@@ -417,13 +339,13 @@ module.exports = function (grunt) {
     }
 
     grunt.task.run([
-      'clean:server',
+//      'clean:server',
 //      'wiredep',
-      'configureProxies:server',
-      'express',
+//      'configureProxies:server',
+//      'express',
 //      'concurrent:server',
 //      'autoprefixer',
-      'connect:livereload',
+//      'connect:livereload',
       'watch'
     ]);
   });
