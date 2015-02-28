@@ -7,16 +7,13 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
-var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
-
 module.exports = function (grunt) {
 
-  
+
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
-  
-  
-  grunt.loadNpmTasks('grunt-express-server');
+
+
   grunt.loadNpmTasks('grunt-contrib-less');
 
 
@@ -32,39 +29,17 @@ module.exports = function (grunt) {
       app: require('./bower.json').appPath || 'app',
       dist: 'dist'
     },
-    express:{
-      options:{
-        port:3000,
-        delay:0,
-        output: ".+",
-        debug:true
-      },
-      server: {
-        options: {
-           script: 'server.js'
-        }
-      }
-    },
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
-      less : {
-        development: {
-          files: {
-            '<%= yeoman.app %>/styles/{,*/}*.css': '<%= yeoman.app %>/styles/{,*/}*.less'
-          }
-        },
-      },
-      bower: {
-        files: ['bower.json'],
-        tasks: ['wiredep']
-      },
+
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all'],
+        tasks: ['newer:jshint:all']
+        /*
         options: {
           livereload: '<%= connect.options.livereload %>'
-        }
+         }*/
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],

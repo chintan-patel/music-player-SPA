@@ -36,7 +36,7 @@
       <ul class="list-group">
 	<li class="list-group-item clearfix"  ng-repeat="each_playlist in playlist"><a href="" ng-click="selectPlaylist($index)">{{ each_playlist.name }}</a></li>
       </ul>
-      
+
 </div>
 <div class="col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-xs-16 col-sm-16 col-md-16">
     <a class="btn btn btn-default" ng-hide="isOnlineUserVisible" ng-click="showOnlineUsers()">Online Users <label ng-show="new_users.length" class="highlight">{{ new_users.length }}</label></a>
@@ -58,7 +58,7 @@
 	<li
 	class="list-group-item clearfix"
 	ng-repeat="item in current_playlist.audio_ids"
-	
+
 	title="{{item.name}}"
 	data-file="{{item.key}}"
       >
@@ -74,10 +74,10 @@
 	    <span ng-click="updateUser(user)"><i class="glyphicon glyphicon-edit"></i></span>
 	    <span ng-click="deleteUser(user._id)"><i class="glyphicon glyphicon-remove"></i></span>
 	  </div>
-	  <div class="">
+    <div class="" style="overflow:hidden">
 	    <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>
 	    <div class="hide">{{ user._id}}</div>
-	    <div class="">{{ user.first_name}} {{ user.last_name }}</div>
+      <div class="" style="overflow:hidden">{{ user.first_name}} {{ user.last_name }}</div>
 	    <div class="">{{ user.username }}</div>
 	  </div>
 	</li>

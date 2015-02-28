@@ -16,19 +16,26 @@ var app = angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
+    'musicPlayerApp.Controllers',
+    'musicPlayerApp.Factories',
     'btford.socket-io',
     'angularFileUpload',
     'audioPlayer-directive'
   ])
-  .config(function ($routeProvider) {
+  .config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when('/', {
           templateUrl: 'views/main.html',
-          controller: 'MainController',
-          resolve :{
-              loadUserData: MainController.loadUserData,
-              loadPlaylistData: MainController.loadPlaylistData,
-              loadAudioData: MainController.loadAudioData
+        resolve: {
+          loadUserData: function (MainFactory) {
+            return MainFactory.loadUserData;
+          },
+          loadPlaylistData: function (MainFactory) {
+            return MainFactory.loadPlaylistData;
+          },
+          loadAudioData: function (MainFactory) {
+            return MainFactory.loadAudioData;
+          }
           }
       })
       .when('/audio/edit/:audio_id', {
@@ -46,19 +53,29 @@ var app = angular
       .otherwise({
           redirectTo: '/'
       });
+
+    //$httpProvider.defaults.headers.common['Authorization'] = 'Bearer '+ authorization_token;
+  }])
+  .run(function ($rootScope, $location, Auth) {
+    //watching the value of the currentUser variable.
+    $rootScope.$watch('currentUser', function (currentUser) {
+      if (!currentUser && (['/', '/login', '/logout', '/signup'].indexOf($location.path()) === -1 )) {
+        Auth.currentUser();
+      }
+    });
   });
-  
-  app.controller("ErrorController", function($scope){
+
+app.controller('ErrorController', function ($scope) {
     $scope.isViewLoading = false;
+  $scope.errors = [];
     $scope.$on('$routeChangeStart', function() {
       $scope.isViewLoading = true;
     });
     $scope.$on('$routeChangeSuccess', function() {
       $scope.isViewLoading = false;
     });
-    $scope.$on("$routeChangeError", function(event, current, previous, rejection){
-        $scope.error= rejection;
-      })
+  $scope.$on('$routeChangeError', function (event, current, previous, rejection) {
+    $scope.errors.push(rejection);
+  });
     });
-  
- 
+

@@ -7,13 +7,14 @@ var express = require('express');
 var connect = require('connect');
 var app = module.exports = express();
 var server = require('http').createServer(app);
+var flash = require('connect-flash');
 var io = require('socket.io').listen(server);
 var AWS = require('aws-sdk');
 var mongoose   = require('mongoose');
 var bodyParser= require('body-parser');
 var busboy = require('connect-busboy');
 var cookieParser = require('cookie-parser');
-var session = require('express-session')
+var session = require('express-session');
 var port    = parseInt(process.env.PORT, 10) || 3000;
 var passport =  require('passport');
 
@@ -41,8 +42,9 @@ app.use(express.static('app'));
 app.use(cookieParser());
 app.use(bodyParser());
 app.use(busboy());
-app.use(session({ 
-    secret: process.env.SESSION_SECRET || 'secret', 
+app.use(flash());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: false
 }));
@@ -67,24 +69,35 @@ app.use('/api', router);
 if (app.get('env') === 'development') {
     app.use(connect.errorHandler({ dumpExceptions: true, showStack: true }));
 }
-  
+
 // production only
 if (app.get('env') === 'production') {
 }
 
 app.get('/',function(req, res){
-    res.render(__dirname + '/app/index.html');
+  req.flash('info', 'Flash is back!');
+  res.render(__dirname + '/app/index.html');
 });
 
 // Configure Controllers
 require('./server/routes/controllers/user.js')(router);
-require('./server/routes/controllers/login.js')(router,passport);
-require('./server/routes/controllers/audio.js')(router); 
+require('./server/routes/controllers/session.js')(router, passport);
+require('./server/routes/controllers/audio.js')(router);
 require('./server/routes/controllers/upload.js')(router, s3Client);
-require('./server/routes/controllers/playlist.js')(router); 
+require('./server/routes/controllers/playlist.js')(router);
+
+// API
+// http://localhost:8080/api/user
+// @GET
+router.route('/api/login-success')
+  .get(function (req, res) {
+    console.log(req.body);
+    console.log('Login Success');
+    return res.json;
+  });
 
 // Socket.io Communication
-var connection = require('./server/routes/socket.js')
+var connection = require('./server/routes/socket.js');
 io.sockets.on('connection', function(socket){
   connection.socketConnection(socket,  s3Client);
 });
