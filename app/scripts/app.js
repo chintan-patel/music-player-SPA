@@ -22,36 +22,37 @@ var app = angular
     'angularFileUpload',
     'audioPlayer-directive'
   ])
-  .config(['$routeProvider', function ($routeProvider) {
+  .config(['$routeProvider', '$resourceProvider', function ($routeProvider, $resourceProvider) {
     $routeProvider
       .when('/', {
-          templateUrl: 'views/main.html',
+        controller: 'MainController',
+        templateUrl: 'views/main.html',
         resolve: {
-          loadUserData: function (MainFactory) {
-            return MainFactory.loadUserData;
+          loadUserData: function (UserFactory) {
+            return UserFactory.query().$promise;
           },
-          loadPlaylistData: function (MainFactory) {
-            return MainFactory.loadPlaylistData;
+          loadPlaylistData: function (PlaylistFactory) {
+            return PlaylistFactory.query().$promise;
           },
-          loadAudioData: function (MainFactory) {
-            return MainFactory.loadAudioData;
+          loadAudioData: function (AudioFactory) {
+            return AudioFactory.query().$promise;
           }
-          }
+        }
       })
       .when('/audio/edit/:audio_id', {
-          templateUrl: 'views/audio_edit.html',
-          controller: 'AudioController'
+        templateUrl: 'views/audio_edit.html',
+        controller: 'AudioController'
       })
       .when('/login', {
-          templateUrl: 'views/login.html',
-          controller: 'LoginController'
+        templateUrl: 'views/login.html',
+        controller: 'LoginController'
       })
       .when('/signup', {
-          templateUrl: 'views/signup.html',
-          controller: 'SignUpController'
+        templateUrl: 'views/signup.html',
+        controller: 'SignUpController'
       })
       .otherwise({
-          redirectTo: '/'
+        redirectTo: '/'
       });
 
     //$httpProvider.defaults.headers.common['Authorization'] = 'Bearer '+ authorization_token;
@@ -66,16 +67,16 @@ var app = angular
   });
 
 app.controller('ErrorController', function ($scope) {
-    $scope.isViewLoading = false;
+  $scope.isViewLoading = false;
   $scope.errors = [];
-    $scope.$on('$routeChangeStart', function() {
-      $scope.isViewLoading = true;
-    });
-    $scope.$on('$routeChangeSuccess', function() {
-      $scope.isViewLoading = false;
-    });
+  $scope.$on('$routeChangeStart', function () {
+    $scope.isViewLoading = true;
+  });
+  $scope.$on('$routeChangeSuccess', function () {
+    $scope.isViewLoading = false;
+  });
   $scope.$on('$routeChangeError', function (event, current, previous, rejection) {
     $scope.errors.push(rejection);
   });
-    });
+});
 

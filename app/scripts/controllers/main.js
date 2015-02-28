@@ -24,7 +24,7 @@ app.controller('AudioController', ['$q', '$scope', '$http', '$location', '$rootS
   function ($q, $scope, $http, $location, $rootScope, $routeParams) {
     $scope.audio = [];
     $scope.$on('$routeChangeSuccess', function () {
-      $http.get('/api/audio/' + $routeParams.audioId)
+      $http.get('/api/audio/' + $routeParams.audio_id)
         .success(function (data) {
           $scope.audio = data;
         })
@@ -64,7 +64,7 @@ app.controller('LoginController', function ($scope, $location, $http, $rootScope
     }
   };
 });
-app.controller('MainController', function ($scope, $route, $http, $rootScope, socket, $upload) {
+app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'socket', '$upload', 'loadUserData', 'loadAudioData', 'loadPlaylistData', function ($scope, $route, $http, $rootScope, socket, $upload, loadUserData, loadAudioData, loadPlaylistData) {
   $scope.currentPlaylist = [];
   $scope.currentTrack = 0;
   $scope.pageSize = 50;
@@ -86,20 +86,36 @@ app.controller('MainController', function ($scope, $route, $http, $rootScope, so
     $scope.isOnlineUserVisible = !$scope.isOnlineUserVisible;
   };
   // PreLoad User data
-  $scope.users = $route.current.locals.loadUserData;
-  $scope.playlist = $route.current.locals.loadPlaylistData;
+  $scope.userData = angular.copy(loadUserData);
+  $scope.playlistData = angular.copy(loadPlaylistData);
+  $scope.audioData = angular.copy(loadAudioData);
 
-  $scope.lists = $route.current.locals.loadAudioData;
+  angular.forEach($scope.userData, function (data) {
+    if (data.hasOwnProperty('_id')) {
+      data.show = false;
+      $scope.users.push(data);
+    }
+  });
+
+  angular.forEach($scope.playlistData, function (data) {
+    if (data.hasOwnProperty('_id')) {
+      data.show = false;
+      $scope.playlist.push(data);
+    }
+  });
 
   angular.forEach($scope.lists, function (data) {
-    data.show = false;
+    if (data.hasOwnProperty('_id')) {
+      data.show = false;
+      $scope.lists.push(data);
+    }
   });
 
   var updateTrack = function () {
-    $rootScope.$broadcast('audio.set', $scope.currentPlaylist.audioIds[$scope.currentTrack].key,
-      $scope.currentPlaylist.audioIds[$scope.currentTrack],
+    $rootScope.$broadcast('audio.set', $scope.currentPlaylist.audio_ids[$scope.currentTrack].key,
+      $scope.currentPlaylist.audio_ids[$scope.currentTrack],
       $scope.currentTrack,
-      $scope.currentPlaylist.audioIds.length
+      $scope.currentPlaylist.audio_ids.length
     );
   };
 
@@ -111,7 +127,7 @@ app.controller('MainController', function ($scope, $route, $http, $rootScope, so
     else {
       $scope.currentPlaylist = $scope.playlist[id];
       $scope.currentTrack = 0;
-      if ($scope.currentPlaylist.audioIds.length) {
+      if ($scope.currentPlaylist.audio_ids.length) {
         updateTrack();
       }
       else {
@@ -121,7 +137,7 @@ app.controller('MainController', function ($scope, $route, $http, $rootScope, so
   };
   $scope.add = function (data) {
     var dataNew = $scope.currentPlaylist;
-    dataNew.audioIds.push(data);
+    dataNew.audio_ids.push(data);
     $http.put('/api/playlist/' + $scope.currentPlaylist._id, dataNew)
       .success(function () {
         $scope.currentPlaylist = dataNew;
@@ -226,10 +242,10 @@ app.controller('MainController', function ($scope, $route, $http, $rootScope, so
 
   $rootScope.$on('audio.next', function () {
     $scope.currentTrack++;
-    if ($scope.currentTrack < $scope.currentPlaylist.audioIds.length) {
+    if ($scope.currentTrack < $scope.currentPlaylist.audio_ids.length) {
       updateTrack();
     } else {
-      $scope.currentTrack = $scope.currentPlaylist.audioIds.length - 1;
+      $scope.currentTrack = $scope.currentPlaylist.audio_ids.length - 1;
     }
   });
 
@@ -266,5 +282,5 @@ app.controller('MainController', function ($scope, $route, $http, $rootScope, so
     $scope.newUsers.push(data);
 
   });
-});
+}]);
 

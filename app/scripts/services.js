@@ -29,59 +29,35 @@ app.factory('socket', function ($rootScope) {
   .factory('Session', ['$resource', function ($resource) {
     return $resource('/api/session');
   }])
-  .factory('MainFactory', ['$q', '$http', function ($q, $http) {
-
-    return {
-      loadAudioData: function () {
-        var defer = $q.defer();
-        $http.get('/api/audio')
-          .success(function (data) {
-            defer.resolve(data);
-          })
-          .error(function () {
-            defer.reject('Cannot Connect: Network Issues');
-          });
-        return defer.promise;
-      },
-      loadUserData: function () {
-        var defer = $q.defer();
-        $http.get('/api/user')
-          .success(function (data) {
-            defer.resolve(data);
-          })
-          .error(function () {
-            defer.reject('Cannot Connect: Network Issues');
-          });
-        return defer.promise;
-      },
-      loadPlaylistData: function () {
-        var defer = $q.defer();
-        $http.get('/api/playlist')
-          .success(function (data) {
-            if (data.length <= 0) {
-              $http.post('/api/playlist', {
-                'name': '[Default Playlist]',
-                'audioIds': []
-              })
-                .success(function (data) {
-                  var tempArray = [];
-                  tempArray.push(data);
-                  defer.resolve(tempArray);
-                })
-                .error(function () {
-                  defer.reject('Cannot Connect: Network Issues');
-                });
-            }
-            else {
-              defer.resolve(data);
-            }
-          })
-          .error(function () {
-            defer.reject('Cannot Connect: Network Issues');
-          });
-        return defer.promise;
-      }
-    };
+  .factory('AudioFactory', ['$resource', function ($resource) {
+    return $resource('/api/audio', null,
+      {
+        'get': {method: 'GET'},
+        'save': {method: 'POST'},
+        'query': {method: 'GET', isArray: false},
+        'remove': {method: 'DELETE'},
+        'delete': {method: 'DELETE'}
+      });
+  }])
+  .factory('UserFactory', ['$resource', function ($resource) {
+    return $resource('/api/user', null,
+      {
+        'get': {method: 'GET'},
+        'save': {method: 'POST'},
+        'query': {method: 'GET', isArray: false},
+        'remove': {method: 'DELETE'},
+        'delete': {method: 'DELETE'}
+      });
+  }])
+  .factory('PlaylistFactory', ['$resource', function ($resource) {
+    return $resource('/api/playlist', null,
+      {
+        'get': {method: 'GET'},
+        'save': {method: 'POST'},
+        'query': {method: 'GET', isArray: true},
+        'remove': {method: 'DELETE'},
+        'delete': {method: 'DELETE'}
+      });
   }])
   .factory('Auth', ['Session', '$cookieStore', '$rootScope', function (Session, $cookieStore, $rootScope) {
     $rootScope.currentUser = $cookieStore.get('user') || null;
@@ -103,8 +79,8 @@ app.factory('socket', function ($rootScope) {
         });
       },
       currentUser: function () {
-        Session.get(function (user) {
-          $rootScope.currentUser = user;
+        Session.get(function (parameters) {
+          $rootScope.currentUser = parameters.user;
         });
       }
     };
