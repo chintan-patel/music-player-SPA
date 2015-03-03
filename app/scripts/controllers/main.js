@@ -222,8 +222,9 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
       $scope.playlist.push(data);
     }
   });
+  console.log($scope.playlist);
 
-  angular.forEach($scope.lists, function (data) {
+  angular.forEach($scope.audioData, function (data) {
     if (data.hasOwnProperty('_id')) {
       data.show = false;
       $scope.lists.push(data);

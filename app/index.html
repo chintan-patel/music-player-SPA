@@ -40,10 +40,11 @@
   <div class="row">
     <span ng-show="isViewLoading"><div class="loading_view"><img src="images/ajax-loader.gif"/></div></span>
 
-    <div class="alert alert-danger" ng-show="errors.length && !isViewLoading" ng-repeat="error in errors">{{
+    <div class="alert alert-danger" ng-if="errors.length && isViewLoading" ng-repeat="error in errors">{{
       error.message }}
     </div>
-    <div class="alert alert-success" ng-show="successMessages.length" ng-repeat="success in successMessages">{{
+    <div class="alert alert-success" ng-if="successMessages.length && isViewLoading"
+         ng-repeat="success in successMessages">{{
       success.message }}
     </div>
     <div ng-view class="body clearfix"></div>

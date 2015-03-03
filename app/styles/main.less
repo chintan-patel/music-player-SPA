@@ -104,8 +104,9 @@ body {
   border: 1px solid #333;
 }
 
-ul.audio_list, ul.registered_user_list {
+ul.online_users, ul.audio_list, ul.registered_user_list {
   margin-top: 20px;
+  z-index: 1;
   li.list-group-item {
     min-height: 50px;
     div.username {
@@ -152,13 +153,15 @@ ul.audio_list, ul.registered_user_list {
 }
 
 .audio-player {
+  z-index: 1;
   padding: 20px 0px;
   display: block;
-  background: lightgray;
+  background: @gray90;
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
+  border: 1px solid @gray40;
 }
 
 .loading_view {

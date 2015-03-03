@@ -43,7 +43,7 @@ var app = angular
         templateUrl: 'views/audio_edit.html',
         controller: 'AudioController',
         resolve: {
-          audio: function (AudioFactory) {
+          audio: function (AudioFactory, $route) {
             return AudioFactory.get({id: $route.current.params.audio_id}).$promise;
           }
         }
