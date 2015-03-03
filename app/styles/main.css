@@ -82,16 +82,38 @@ body {
   background-size: cover;
   border: 1px solid #333;
 }
+
+ul.audio_list,
 ul.registered_user_list {
   margin-top: 20px;
 }
-ul.registered_user_list li div.edit-delete,
-ul.audio_list li div.edit-delete {
+
+ul.audio_list li.list-group-item,
+ul.registered_user_list li.list-group-item {
+  min-height: 50px;
+}
+
+ul.audio_list li.list-group-item div.username,
+ul.registered_user_list li.list-group-item div.username {
+  font-size: .8em;
+  color: #666666;
+}
+
+ul.audio_list li.list-group-item div.edit-delete,
+ul.registered_user_list li.list-group-item div.edit-delete {
   display: none;
 }
-ul.registered_user_list li:hover div.edit-delete,
-ul.audio_list li:hover div.edit-delete {
+
+ul.audio_list li.list-group-item:hover div.edit-delete,
+ul.registered_user_list li.list-group-item:hover div.edit-delete {
   display: block;
+  color: #666666;
+  cursor: pointer;
+}
+
+ul.audio_list li.list-group-item:hover div.edit-delete a,
+ul.registered_user_list li.list-group-item:hover div.edit-delete a {
+  color: #666666;
 }
 .online_users {
   border: 1px solid #dedede;
@@ -111,7 +133,8 @@ ul.audio_list li:hover div.edit-delete {
 .online_users .close_button {
   list-style-type: none;
 }
-audio-player {
+
+.audio-player {
   padding: 20px 0px;
   display: block;
   background: lightgray;
@@ -126,32 +149,4 @@ audio-player {
 }
 .body {
   margin-bottom: 140px;
-}
-.playlist {
-  height: 100%;
-  width: 100px;
-  background: lightblue;
-  position: absolute;
-  top: 60px;
-  left: 0px;
-  -webkit-animation-timing-function: ease-in-out;
-  /* Chrome, Safari, Opera */
-  -webkit-transition: width .5s;
-  /* Safari */
-  transition: width .5s;
-  animation-timing-function: ease-in-out;
-  border-right: 1px solid #dedede;
-}
-.playlist li i {
-  display: none;
-}
-.playlist:hover {
-  width: 200px;
-  height: 100%;
-  background: lightblue;
-  position: absolute;
-  top: 60px;
-}
-.playlist:hover li i {
-  display: block;
 }

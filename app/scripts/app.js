@@ -28,8 +28,8 @@ var app = angular
         controller: 'MainController',
         templateUrl: 'views/main.html',
         resolve: {
-          loadUserData: function (UserFactory) {
-            return UserFactory.query().$promise;
+          loadUserData: function (UsersFactory) {
+            return UsersFactory.query().$promise;
           },
           loadPlaylistData: function (PlaylistFactory) {
             return PlaylistFactory.query().$promise;
@@ -41,7 +41,21 @@ var app = angular
       })
       .when('/audio/edit/:audio_id', {
         templateUrl: 'views/audio_edit.html',
-        controller: 'AudioController'
+        controller: 'AudioController',
+        resolve: {
+          audio: function (AudioFactory) {
+            return AudioFactory.get({id: $route.current.params.audio_id}).$promise;
+          }
+        }
+      })
+      .when('/user/edit/:user_id', {
+        templateUrl: 'views/userEdit.html',
+        controller: 'UserController',
+        resolve: {
+          user: function (UserFactory, $route) {
+            return UserFactory.get({id: $route.current.params.user_id}).$promise;
+          }
+        }
       })
       .when('/login', {
         templateUrl: 'views/login.html',
@@ -69,6 +83,7 @@ var app = angular
 app.controller('ErrorController', function ($scope) {
   $scope.isViewLoading = false;
   $scope.errors = [];
+  $scope.successMessages = [];
   $scope.$on('$routeChangeStart', function () {
     $scope.isViewLoading = true;
   });

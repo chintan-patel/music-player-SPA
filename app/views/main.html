@@ -25,7 +25,7 @@
       class="glyphicon glyphicon-remove"></i></button>
     <label class="btn btn-primary" for="upload_files">Add Files</label>
     <input id="upload_files" style="position:absolute; left:-9999px;" type="file" multiple
-           ng-file-select="onFileSelect($files)">
+           ng-model="files" ng-file-select="onFileSelect($files)">
     <button class="btn-link pull-right" ng-show="files.length" ng-click="upload.abort()">Cancel Upload</button>
     <div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class"
          ng-show="dropSupported"
@@ -62,7 +62,7 @@
     </ul>
   </div>
 </div>
-<audio-player class="clearfix"></audio-player>
+<div class="audio-player clearfix"></div>
 <div class="playlist">
   <ul class="list-group">
     <li class="list-group-item clearfix" ng-show="currentPlaylist.audio_ids.length"
@@ -83,19 +83,20 @@
       <div class="pull-left" style="position: absolute;top: 5px;right: 10px;" ng-click="deleteAudio(item._id)"><i
         class="glyphicon glyphicon-remove"></i></div>
   </ul>
-  <ul class="list-group registered_user_list">
+  <ul class="list-group registered_user_list" ng-show="users.length">
     <li class="list-group-item clearfix" ng-repeat="user in users" title="{{ user.username }}">
       <div class="edit-delete pull-right">
-        <span ng-click="updateUser(user)"><i class="glyphicon glyphicon-edit"></i></span>
-        <span ng-click="deleteUser(user._id)"><i class="glyphicon glyphicon-remove"></i></span>
+        <a ng-href="#/user/edit/{{ user._id }}"><i class="fa fa-edit"></i></a>
+        <a ng-click="deleteUser($index)"><i class="fa fa-remove"></i></a>
       </div>
       <div class="" style="overflow:hidden">
-        <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>
-
-        <div class="hide">{{ user._id}}</div>
-        <div class="" style="overflow:hidden">{{ user.firstName}} {{ user.lastName }}</div>
-        <div class="">{{ user.username }}</div>
+        <div class="">{{ user.first_name}} {{ user.last_name }}</div>
+        <div class="username">{{ user.username }}</div>
+        <div class="username">{{ user.delete }}</div>
       </div>
     </li>
-  </ul
+  </ul>
+  <div class="well" ng-hide="users.length">
+    No Users
+  </div>
 </div>

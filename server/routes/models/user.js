@@ -1,3 +1,10 @@
+/**
+ * mongoose schema for accessing User Collection
+ * bcrypt for encrypting the password
+ * Adding salt factor
+ * @type {*|exports}
+ */
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
@@ -14,6 +21,10 @@ var UserSchema   = new Schema({
 	created_on:  {type: Date, default: Date.now}
 });
 
+/**
+ * Execute this procedure before the save happens on user model
+ * Generates the encrypted password using salt and bcrypt
+ */
 UserSchema.pre('save', function(next) {
 	var user = this;
 
@@ -29,7 +40,7 @@ UserSchema.pre('save', function(next) {
 	});
 });
 
-// Password verification
+// Password verification used while login
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 	bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
 		if(err) return cb(err);
@@ -37,4 +48,5 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 	});
 };
 
+// Expose UserSchema as 'User' model
 module.exports = mongoose.model('User', UserSchema);

@@ -1,8 +1,13 @@
+'use strict';
+
 module.exports = function (router, passport) {
-  // API
-  // http://localhost:8080/api/user
-  // @POST
+  /**
+   * API Endpoint: http://localhost:8080/api/session
+   * @POST
+   */
   router.post('/session', function (req, res, next) {
+
+    // Calls passport authenticate function for login
     passport.authenticate('login', function (err, user, info) {
       var error = err || info;
       console.log(error);

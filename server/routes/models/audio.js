@@ -1,3 +1,7 @@
+/**
+ * mongoose schema for accessing Audio Collection
+ * @type {*|exports}
+ */
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
