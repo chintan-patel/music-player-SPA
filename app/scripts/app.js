@@ -66,7 +66,7 @@ var app = angular
         controller: 'SignUpController'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/login'
       });
 
     //$httpProvider.defaults.headers.common['Authorization'] = 'Bearer '+ authorization_token;
@@ -80,7 +80,7 @@ var app = angular
     });
   });
 
-app.controller('ErrorController', function ($scope) {
+app.controller('ErrorController', ['$scope', 'Auth', '$cookieStore', '$location', function ($scope, Auth, $cookieStore, $location) {
   $scope.isViewLoading = false;
   $scope.errors = [];
   $scope.successMessages = [];
@@ -93,5 +93,5 @@ app.controller('ErrorController', function ($scope) {
   $scope.$on('$routeChangeError', function (event, current, previous, rejection) {
     $scope.errors.push(rejection);
   });
-});
+}]);
 

@@ -10,7 +10,6 @@ module.exports = function (router, passport) {
     // Calls passport authenticate function for login
     passport.authenticate('login', function (err, user, info) {
       var error = err || info;
-      console.log(error);
       if (error) {
         return res.json(400, error);
       }
@@ -18,7 +17,9 @@ module.exports = function (router, passport) {
         if (err) {
           return res.send(err);
         }
-        res.json(req.user.user_info);
+        console.log(req);
+        user.password = null;
+        res.json(req.user);
       });
     })(req, res, next);
   });

@@ -35,12 +35,19 @@ module.exports = function (router) {
       if (user.username == undefined) {
         res.json({message: 'Not Added'});
       }
-      // save the user and check for errors
-      user.save(function (err, result) {
-        if (err) {
-          res.send(err);
+      User.find({username: req.body.username}, function (err, record) {
+        if (record.length === 0) {
+
+          // save the user and check for errors
+          user.save(function (err, result) {
+            if (err) {
+              res.status(400).send(err);
+            }
+            res.send(result);
+          });
+        } else {
+          res.status(400).send('User Exists');
         }
-        res.send(result);
       });
     });
 

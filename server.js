@@ -32,11 +32,11 @@ mongoose.connect('mongodb://chintan:chintan@localhost:27017/test');
 var credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-account'});
 AWS.config.credentials = credentials;
 var s3Client = new AWS.S3();
-
 /**
  * App Port || 3000
  */
 app.set('port', process.env.PORT || 3000);
+
 
 require('./server/routes/controllers/passport_config.js')(passport);
 
@@ -48,11 +48,8 @@ app.use(bodyParser());
 app.use(busboy());
 app.use(flash());
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret',
-  resave: false,
-  saveUninitialized: false
+  secret: process.env.SESSION_SECRET || 'secret'
 }));
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -83,7 +80,6 @@ if (app.get('env') === 'production') {
 }
 
 app.get('/', function (req, res) {
-  req.flash('info', 'Flash is back!');
   res.render(__dirname + '/app/index.html');
 });
 
@@ -99,7 +95,6 @@ require('./server/routes/controllers/playlist.js')(router);
 // @GET
 router.route('/api/login-success')
   .get(function (req, res) {
-    console.log(req.body);
     console.log('Login Success');
     return res.json;
   });

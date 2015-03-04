@@ -12,23 +12,36 @@ var app = angular.module('musicPlayerApp.Controllers', []);
  */
 app.controller('SignUpController', ['$scope', '$location', 'UsersFactory', function ($scope, $location, UsersFactory) {
   /**
+   * Error Initializer
+   */
+  $scope.errors = [];
+  $scope.successMessages = [];
+
+
+  /**
    * form submit
    */
   $scope.signUp = function () {
 
-    $scope.user.firstName = name.substr(0, $scope.user.name.indexOf(' '));
-    $scope.user.lastName = name.substr($scope.user.name.indexOf(' ') + 1);
+    if ($scope.signUpForm.$invalid) {
+      $scope.errors.length = 0;
+      $scope.errors.push('Please fill all required fields');
+      return false;
+    }
+    var nameSplit = $scope.signUpForm.name.$viewValue.split(' ');
+    $scope.user.first_name = nameSplit.slice(0, 1).pop();
+    $scope.user.last_name = nameSplit.slice(1).join(' ');
 
     if ($scope.user !== undefined) {
 
       var promise = UsersFactory.save($scope.user).$promise;
       promise
         .then(function (result) {
-          console.log(result);
-          $location.path('#/home');
+          $location.path('#/login');
         })
         .catch(function (err) {
-          $scope.errors = data;
+          $scope.errors.length = 0;
+          $scope.errors.push(err.data);
         });
     }
   };
@@ -71,7 +84,13 @@ app.controller('AudioController', ['$scope', 'audio', 'AudioFactory', function (
  * Handles the Login using session
  */
 app.controller('LoginController', function ($scope, $location, $http, $rootScope, $routeParams, Auth) {
+  $scope.errors = [];
   $scope.login = function () {
+    if ($scope.loginForm.$invalid) {
+      $scope.errors.length = 0;
+      $scope.errors.push('Please fill all required fields');
+      return false;
+    }
     if ($scope.user !== undefined) {
       var data = {
         username: $scope.user.username,
@@ -83,11 +102,12 @@ app.controller('LoginController', function ($scope, $location, $http, $rootScope
 
         // Error redirect to login
         if (err) {
-          $scope.errors.push(err);
-          $location.path('#/login');
+          $scope.errors.length = 0;
+          $scope.errors.push(err.message);
         }
         else {
           // Success redirect to home
+          Auth.currentUser();
           $location.path('#/');
         }
       });
@@ -184,21 +204,11 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
   $scope.users = [];
   $scope.uploadModel = [];
   $scope.onlineUsers = [];
-  $scope.newUsers = [];
   $scope.lists = [];
   $scope.files = [];
 
   $scope.isUploadVisible = false;
   $scope.isOnlineUserVisible = false;
-
-  /**
-   * showOnlineUsers
-   * Show/Hide the online user block
-   */
-  $scope.showOnlineUsers = function () {
-    $scope.newUsers.length = 0;
-    $scope.isOnlineUserVisible = !$scope.isOnlineUserVisible;
-  };
 
   /**
    * Preload the user, playlists and audio data
@@ -222,7 +232,6 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
       $scope.playlist.push(data);
     }
   });
-  console.log($scope.playlist);
 
   angular.forEach($scope.audioData, function (data) {
     if (data.hasOwnProperty('_id')) {
@@ -443,19 +452,16 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
   // Socket listener if new user is online
   socket.on('user:connected', function (data) {
     $scope.onlineUsers.push(data.user);
-    //updateTrack();
   });
 
   // Socket listener if user goes offline
   socket.on('user:disconnected', function (data) {
     $scope.onlineUsers.push(data.username + '  disconnected');
-    $scope.newUsers.length = $scope.newUsers.length - 1;
   });
 
   // Socket listener if user joins the channel
   socket.on('user:join', function (data) {
     $scope.onlineUsers.push(data);
-    $scope.newUsers.push(data);
   });
 }]);
 

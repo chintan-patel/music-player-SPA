@@ -4,14 +4,12 @@
   color: #000;
   padding: 0.2em 0;
 }
-
 /* Space out content a bit */
 body {
   padding-top: 20px;
   padding-bottom: 20px;
   background: url('../images/noise-red.jpg');
 }
-
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,
@@ -19,51 +17,42 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 }
-
 /* Custom page header */
 .header {
   border-bottom: 1px solid #e5e5e5;
   /* Make the masthead heading the same height as the navigation */
 }
-
 .header h3 {
   margin-top: 0;
   margin-bottom: 0;
   line-height: 40px;
   padding-bottom: 19px;
 }
-
 /* Custom page footer */
 .footer {
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
-
 .container-narrow > hr {
   margin: 30px 0;
 }
-
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
 }
-
 .jumbotron .btn {
   font-size: 21px;
   padding: 14px 24px;
 }
-
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;
 }
-
 .marketing p + h4 {
   margin-top: 28px;
 }
-
 /* Remove the padding we set earlier */
 .header,
 .marketing,
@@ -71,22 +60,18 @@ body {
   padding-left: 0;
   padding-right: 0;
 }
-
 /* Space out the masthead */
 .header {
   margin-bottom: 30px;
 }
-
 /* Remove the bottom border on the jumbotron for visual effect */
 .jumbotron {
   border-bottom: 0;
 }
-
 .albums {
   margin: 0;
   padding: 0;
 }
-
 .albums li {
   list-style: none;
   margin: 10px;
@@ -97,36 +82,28 @@ body {
   background-size: cover;
   border: 1px solid #333;
 }
-
 ul.online_users,
 ul.audio_list,
 ul.registered_user_list {
   margin-top: 20px;
   z-index: 1;
 }
-
 ul.online_users li.list-group-item,
 ul.audio_list li.list-group-item,
 ul.registered_user_list li.list-group-item {
   min-height: 50px;
 }
-
 ul.online_users li.list-group-item div.username,
 ul.audio_list li.list-group-item div.username,
 ul.registered_user_list li.list-group-item div.username {
   font-size: .8em;
   color: #666666;
 }
-
 ul.online_users li.list-group-item div.edit-delete,
 ul.audio_list li.list-group-item div.edit-delete,
 ul.registered_user_list li.list-group-item div.edit-delete {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   display: none;
 }
-
 ul.online_users li.list-group-item:hover div.edit-delete,
 ul.audio_list li.list-group-item:hover div.edit-delete,
 ul.registered_user_list li.list-group-item:hover div.edit-delete {
@@ -134,19 +111,17 @@ ul.registered_user_list li.list-group-item:hover div.edit-delete {
   color: #666666;
   cursor: pointer;
 }
-
 ul.online_users li.list-group-item:hover div.edit-delete a,
 ul.audio_list li.list-group-item:hover div.edit-delete a,
 ul.registered_user_list li.list-group-item:hover div.edit-delete a {
   color: #666666;
 }
-
 .online_users {
   border: 1px solid #dedede;
-
-.list-group-item {
-  border: 0;
 }
+
+.online_users .list-group-item {
+  border: 0;
 }
 .highlight {
   background: #aa7d44;
@@ -155,12 +130,12 @@ ul.registered_user_list li.list-group-item:hover div.edit-delete a {
   border-radius: 12px;
 }
 
-.online_users .list-group-item
-
+.online_users .list-group-item .user_name {
+  word-wrap: break-word;
+}
 .online_users .close_button {
   list-style-type: none;
 }
-
 .audio-player {
   z-index: 1;
   padding: 20px 0px;
@@ -172,12 +147,10 @@ ul.registered_user_list li.list-group-item:hover div.edit-delete a {
   width: 100%;
   border: 1px solid #666666;
 }
-
 .loading_view {
   font-size: 2.2em;
   text-align: center;
 }
-
 .body {
   margin-bottom: 140px;
 }

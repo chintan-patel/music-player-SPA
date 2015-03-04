@@ -105,6 +105,7 @@ app.factory('socket', function ($rootScope) {
           rememberMe: user.rememberMe
         }, function (user) {
           $rootScope.currentUser = user;
+          $cookieStore.put('user', user._id);
           return callback();
         }, function (err) {
           return callback(err.data);
@@ -114,6 +115,7 @@ app.factory('socket', function ($rootScope) {
       // sets current user in session
       currentUser: function () {
         Session.get(function (parameters) {
+          console.log(parameters);
           $rootScope.currentUser = parameters.user;
         });
       }
