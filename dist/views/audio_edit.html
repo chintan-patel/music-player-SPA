@@ -1,0 +1,7 @@
+<div class="">Edit Audio - {{audio.name}}</div>
+<form name="audio_form" ng-submit="updateAudio(audio._id)">
+	<input type="text" name="name" value="audio.name" ng-model="audio.name" required/>
+	<input type="submit" class="btn btn-mini btn-primary" value="Save" />
+	<div class="btn btn-mini btn-default" ng-click="toggleEditAudio(audio._id)">cancel</div>
+</form>
+</div>
