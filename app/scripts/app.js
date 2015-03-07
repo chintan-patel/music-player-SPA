@@ -22,7 +22,10 @@ var app = angular
     'angularFileUpload',
     'audioPlayer-directive'
   ])
-  .config(['$routeProvider', '$resourceProvider', function ($routeProvider, $resourceProvider) {
+  .config(['$routeProvider', '$resourceProvider', '$httpProvider', function ($routeProvider, $resourceProvider, $httpProvider) {
+    $httpProvider.defaults.withCredentials = true;
+
+
     $routeProvider
       .when('/', {
         controller: 'MainController',
@@ -91,7 +94,9 @@ app.controller('ErrorController', ['$scope', 'Auth', '$cookieStore', '$location'
     $scope.isViewLoading = false;
   });
   $scope.$on('$routeChangeError', function (event, current, previous, rejection) {
-    $scope.errors.push(rejection);
+    if (rejection.status === 403) {
+      $location.path('/login');
+    }
   });
 }]);
 

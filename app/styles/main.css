@@ -119,7 +119,6 @@ ul.registered_user_list li.list-group-item:hover div.edit-delete a {
 .online_users {
   border: 1px solid #dedede;
 }
-
 .online_users .list-group-item {
   border: 0;
 }
@@ -129,7 +128,6 @@ ul.registered_user_list li.list-group-item:hover div.edit-delete a {
   color: white;
   border-radius: 12px;
 }
-
 .online_users .list-group-item .user_name {
   word-wrap: break-word;
 }

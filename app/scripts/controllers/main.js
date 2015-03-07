@@ -108,7 +108,7 @@ app.controller('LoginController', function ($scope, $location, $http, $rootScope
         else {
           // Success redirect to home
           Auth.currentUser();
-          $location.path('#/');
+          $location.path('/');
         }
       });
     }
@@ -138,7 +138,7 @@ app.controller('UserController', ['$scope', '$location', 'user', 'UserFactory', 
       }).$promise;
       promise.then(function (result) {
         console.log(result);
-        $location.path('#/');
+        $location.path('/login');
       })
         .catch(function (err) {
           console.log(err);

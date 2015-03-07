@@ -4,15 +4,19 @@
  * Models
  */
 var User = require(__dirname + '/../models/user.js');
-var HttpStatus = require('http-status-codes');
 
-module.exports = function (router) {
+module.exports = function (router, passport) {
   router.get('/user', function (req, res) {
+    if (!req.isAuthenticated()) {
+      res.status(403);
+    }
     User.find({delete: false}, function (err, users) {
       var Map = {};
       users.forEach(function (user) {
         Map[user._id] = user;
       });
+
+
       res.send(Map);
     });
   });
@@ -21,35 +25,14 @@ module.exports = function (router) {
    * API Endpoint: http://localhost:8080/api/user
    * @POST
    */
-  router.route('/user')
-    .post(function (req, res) {
-
-      // Assign values to user model
-      var user = new User();
-      user.username = req.body.username;
-      user.password = req.body.password;
-      user.salt = req.body.salt;
-      user.first_name = req.body.first_name;
-      user.last_name = req.body.last_name;
-      user.delete = false;
-      if (user.username == undefined) {
-        res.json({message: 'Not Added'});
+  router.post('/user', function (req, res, next) {
+    passport.authenticate('local-signup', function (err, user, info) {
+      if (err) {
+        res.status(400).send(err);
       }
-      User.find({username: req.body.username}, function (err, record) {
-        if (record.length === 0) {
-
-          // save the user and check for errors
-          user.save(function (err, result) {
-            if (err) {
-              res.status(400).send(err);
-            }
-            res.send(result);
-          });
-        } else {
-          res.status(400).send('User Exists');
-        }
-      });
-    });
+      res.send(user);
+    })(req, res, next);
+  });
 
   /**
    * API Endpoint: http://localhost:8080/api/user/:user_id
@@ -60,9 +43,13 @@ module.exports = function (router) {
 
     // GET :user_id
     .get(function (req, res) {
-      User.findById(req.params.user_id, function (err, user) {
-        res.send(user);
-      });
+      console.log(req.isAuthenticated());
+      if (req.isAuthenticated()) {
+        User.findById(req.params.user_id, function (err, user) {
+          res.status(200).send(user);
+        });
+      }
+      res.status(403);
     })
 
   /**
@@ -101,8 +88,7 @@ module.exports = function (router) {
           },
           function (err) {
             if (err) {
-              console.log(err);
-              res.send(HttpStatus.INTERNAL_SERVER_ERROR);
+              res.status(500).send();
             }
             res.json({message: true});
           });
@@ -115,17 +101,16 @@ module.exports = function (router) {
     .delete(function (req, res) {
       User.findById(req.params.user_id, function (err, user) {
         user.delete = true;
-        console.log(user);
 
         // Soft delete
         user.update(function (err) {
           if (err) {
-            console.log(err);
             res.send(err);
           }
-          res.send(HttpStatus.INTERNAL_SERVER_ERROR);
+          res.status(500).send();
         });
       });
     })
   ;
-};
+}
+;

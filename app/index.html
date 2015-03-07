@@ -29,7 +29,6 @@
 <div class="header">
   <ul class="nav nav-pills">
     <li class=""><h4 class="text-muted">KashCandiApp</h4></li>
-    {{ currentUser }}
     <li ng-show="currentUser" class=""><a ng-href="#">Home ({{ currentUser.first_name}} {{ currentUser.last_name }})</a>
     </li>
     <li ng-show="!currentUser" class=""><a ng-href="/#/login">Login</a></li>

@@ -23,7 +23,9 @@ var passport = require('passport');
  * Get Database Connection to mongoDB
  * move DB config to configuration file
  */
-mongoose.connect('mongodb://chintan:chintan@localhost:27017/test');
+var configDB = require(__dirname + '/server/config/database.js');
+mongoose.connect(configDB.url);
+
 
 /**
  *  Configuration
@@ -38,7 +40,6 @@ var s3Client = new AWS.S3();
 app.set('port', process.env.PORT || 3000);
 
 
-require('./server/routes/controllers/passport_config.js')(passport);
 
 app.use(connect.json());
 app.use(connect.urlencoded());
@@ -48,7 +49,10 @@ app.use(bodyParser());
 app.use(busboy());
 app.use(flash());
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret'
+  secret: process.env.SESSION_SECRET || 'secret',
+  name: 'music-app',
+  resave: true,
+  saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -79,31 +83,25 @@ if (app.get('env') === 'development') {
 if (app.get('env') === 'production') {
 }
 
-app.get('/', function (req, res) {
-  res.render(__dirname + '/app/index.html');
+
+require('./server/config/passport.js')(passport);
+
+require('./server/routes/routes.js')(app);
+
+// Socket.io Communication
+var connection = require('./server/routes/socket.js');
+io.sockets.on('connection', function (socket) {
+  connection.socketConnection(socket);
 });
 
 // Configure Controllers
-require('./server/routes/controllers/user.js')(router);
+require('./server/routes/controllers/user.js')(router, passport, connection, io);
 require('./server/routes/controllers/session.js')(router, passport);
 require('./server/routes/controllers/audio.js')(router);
 require('./server/routes/controllers/upload.js')(router, s3Client);
 require('./server/routes/controllers/playlist.js')(router);
 
-// API
-// http://localhost:8080/api/user
-// @GET
-router.route('/api/login-success')
-  .get(function (req, res) {
-    console.log('Login Success');
-    return res.json;
-  });
 
-// Socket.io Communication
-var connection = require('./server/routes/socket.js');
-io.sockets.on('connection', function (socket) {
-  connection.socketConnection(socket, s3Client);
-});
 
 // Start Node Server
 server.listen(app.get('port'), function () {

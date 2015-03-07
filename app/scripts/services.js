@@ -37,7 +37,7 @@ app.factory('socket', function ($rootScope) {
 
   // Session Service handles the user login
   .factory('Session', ['$resource', function ($resource) {
-    return $resource('/api/session');
+    return $resource('/api/login');
   }])
 
   // AudioFactory handles the api endpoint for audio resource
@@ -91,7 +91,7 @@ app.factory('socket', function ($rootScope) {
 
   // Auth service to authenticate the user using cookie and session
   .factory('Auth', ['Session', '$cookieStore', '$rootScope', function (Session, $cookieStore, $rootScope) {
-    $rootScope.currentUser = $cookieStore.get('user') || null;
+    $rootScope.currentUser = $cookieStore.get('music-app') || null;
     $cookieStore.remove('user');
 
     return {
@@ -105,7 +105,6 @@ app.factory('socket', function ($rootScope) {
           rememberMe: user.rememberMe
         }, function (user) {
           $rootScope.currentUser = user;
-          $cookieStore.put('user', user._id);
           return callback();
         }, function (err) {
           return callback(err.data);
@@ -115,7 +114,6 @@ app.factory('socket', function ($rootScope) {
       // sets current user in session
       currentUser: function () {
         Session.get(function (parameters) {
-          console.log(parameters);
           $rootScope.currentUser = parameters.user;
         });
       }
