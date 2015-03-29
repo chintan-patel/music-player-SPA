@@ -37,22 +37,6 @@ body {
 .container-narrow > hr {
   margin: 30px 0;
 }
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
-}
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-.marketing p + h4 {
-  margin-top: 28px;
-}
 /* Remove the padding we set earlier */
 .header,
 .marketing,
@@ -64,9 +48,14 @@ body {
 .header {
   margin-bottom: 30px;
 }
-/* Remove the bottom border on the jumbotron for visual effect */
-.jumbotron {
-  border-bottom: 0;
+
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
 }
 .albums {
   margin: 0;
@@ -150,5 +139,6 @@ ul.registered_user_list li.list-group-item:hover div.edit-delete a {
   text-align: center;
 }
 .body {
+  background: url('../images/noise-red.jpg');
   margin-bottom: 140px;
 }

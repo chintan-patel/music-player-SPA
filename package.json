@@ -16,6 +16,9 @@
     "mongoose": "~3.6.13",
     "passport": "v0.2.0",
     "passport-local": "v1.0.0",
+    "jsonwebtoken": "v4.2.2",
+    "express-jwt": "v2.1.0",
+    "socketio-jwt": "v3.0.0",
     "socket.io": "~0.9.16"
   },
   "devDependencies": {

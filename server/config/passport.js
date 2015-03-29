@@ -80,7 +80,7 @@ module.exports = function (passport) {
           return done(null, false, {message: 'No User found'});
         }
 
-        // If user password doesnt match
+        // If user password does not match
         if (user.validPassword(password)) {
           return done(null, false, {message: 'Password does not match'});
         }

@@ -29,16 +29,16 @@
 </div>
 
 <div class="audio-player clearfix"></div>
-<div class="col-xs-3 col-sm-3 col-md-3" ng-show="onlineUsers.length">
+<div class="col-xs-3 col-sm-3 col-md-3" ng-show="loggedInUsers.length">
+  <h4>Online Users</h4>
   <ul class="list-group online_users">
-    <li class="list-group-item clearfix" ng-repeat="user in onlineUsers" title="{{ user.username }}">
-      <span class="hide" style="font-size:0.5em">{{ user.created_on }}</span>
-      <span class="id hide">{{ user._id}}</span>
-
-      <div class="user_name">{{ user.username }}</div>
+    <li class="list-group-item clearfix" ng-repeat="eachRecord in loggedInUsers">
+      <div class="user_name" ng-click="openChat(eachRecord)">{{ eachRecord.user.name}}</div>
     </li>
   </ul>
 </div>
+
+<div class="open-chat" chat="chat" ng-repeat="chat in chats"></div>
 
 
 <div class="col-xs-5 col-sm-5 col-md-5" ng-show="lists.length">
@@ -74,6 +74,20 @@
       </div>
     </li>
   </ul>
+</div>
+
+<div class="col-xs-4 col-sm-4 col-md-4">
+  <ul class="list-group messages" ng-show="messages.length">
+    <li class="list-group-item clearfix" ng-repeat="data in messages">
+      <span ng-if="data.user.id === currentUser.id" class="label label-danger">me</span>
+      <span ng-if="data.user.id !== currentUser.id" class="label label-success">{{ data.user.name }}</span>{{
+      data.message }}
+    </li>
+  </ul>
+  <form class="form-horizontal" name="addMessageForm" ng-submit="addMessage()">
+    <input type="text" name="userMessage" ng-model="userMessage"/>
+    <input type="submit" name="submit" value="send" class="btn btn-primary"/>
+  </form>
 </div>
 
 <div class="col-xs-4  playlist">

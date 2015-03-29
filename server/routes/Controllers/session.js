@@ -1,7 +1,14 @@
 'use strict';
 
 
-module.exports = function (router, passport, socket) {
+module.exports = function (router, passport) {
+
+  router.get('/login', function(req, res, next){
+    console.log(req);
+    res.send(req.session);
+  });
+
+
   /**
    * API Endpoint: http://localhost:8080/api/login
    * @POST
@@ -17,22 +24,16 @@ module.exports = function (router, passport, socket) {
           return res.send(err);
         }
 
-        socket.emit('user:connected', {
-          user: {
+        // notify other clients that a new user has joined
+        if (socket) {
+          socket.broadcast.emit('user:join', {
             _id: user._id,
             full_name: user.first_name + " " + user.last_name,
             username: user.local.username
-          }
-        });
-
-        // notify other clients that a new user has joined
-        socket.broadcast.emit('user:join', {
-          _id: user._id,
-          full_name: user.first_name + " " + user.last_name,
-          username: user.local.username
-        });
-
-        res.json(req.user);
+          });
+        }
+        user.local.password = null;
+        res.status(200).send(user);
       });
     })(req, res, next);
   });

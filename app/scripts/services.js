@@ -4,42 +4,38 @@
  * Factory / Service
  * @type {module}
  */
-var app = angular.module('musicPlayerApp.Factories', []);
-
 // Socket Service to connect with Node app
-app.factory('socket', function ($rootScope) {
-  var socket = io.connect('http://localhost:3000');
-  return {
+var app = angular.module('musicPlayerApp.Factories', [])
+  .factory('socket', ['$rootScope', '$window', function ($rootScope, $window) {
+    var socket = io.connect('http://localhost:3000', {
+      'query': 'token=' + $window.sessionStorage.token
+    });
 
-    // Event Listener
-    on: function (eventName, callback) {
-      socket.on(eventName, function () {
-        var args = arguments;
-        $rootScope.$apply(function () {
-          callback.apply(socket, args);
-        });
-      });
-    },
+    return {
 
-    // Event Broadcast to Node app
-    emit: function (eventName, data, callback) {
-      socket.emit(eventName, data, function () {
-        var args = arguments;
-        $rootScope.$apply(function () {
-          if (callback) {
+      // Event Listener
+      on: function (eventName, callback) {
+        socket.on(eventName, function () {
+          var args = arguments;
+          $rootScope.$apply(function () {
             callback.apply(socket, args);
-          }
+          });
         });
-      });
-    }
-  };
-})
+      },
 
-  // Session Service handles the user login
-  .factory('Session', ['$resource', function ($resource) {
-    return $resource('/api/login');
+      // Event Broadcast to Node app
+      emit: function (eventName, data, callback) {
+        socket.emit(eventName, data, function () {
+          var args = arguments;
+          $rootScope.$apply(function () {
+            if (callback) {
+              callback.apply(socket, args);
+            }
+          });
+        });
+      }
+    };
   }])
-
   // AudioFactory handles the api endpoint for audio resource
   .factory('AudioFactory', ['$resource', function ($resource) {
     return $resource('/api/audio', null,
@@ -88,34 +84,75 @@ app.factory('socket', function ($rootScope) {
         'delete': {method: 'DELETE'}
       });
   }])
-
-  // Auth service to authenticate the user using cookie and session
-  .factory('Auth', ['Session', '$cookieStore', '$rootScope', function (Session, $cookieStore, $rootScope) {
-    $rootScope.currentUser = $cookieStore.get('music-app') || null;
-    $cookieStore.remove('user');
-
+  .factory('Auth', ['$resource', function ($resource) {
+    return $resource('/authenticate', null,
+      {
+        'save': {method: 'POST'}
+      });
+  }])
+  .
+  factory('authInterceptor', ['$rootScope', '$q', '$window', '$location', function ($rootScope, $q, $window, $location) {
     return {
-
-      // Login using provider, used in LoginController
-      login: function (provider, user, callback) {
-        Session.save({
-          provider: provider,
-          username: user.username,
-          password: user.password,
-          rememberMe: user.rememberMe
-        }, function (user) {
-          $rootScope.currentUser = user;
-          return callback();
-        }, function (err) {
-          return callback(err.data);
-        });
+      request: function (config) {
+        config.headers = config.headers || {};
+        if ($window.sessionStorage.token) {
+          config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+        }
+        return config;
       },
-
-      // sets current user in session
-      currentUser: function () {
-        Session.get(function (parameters) {
-          $rootScope.currentUser = parameters.user;
-        });
+      response: function (response) {
+        if (response.status === 401) {
+          console.log('error', response);
+        }
+        return response || $q.when(response);
+      },
+      responseError: function (response) {
+        if (response.status === 401) {
+          console.log('responseError', response);
+          $location.path('/login');
+        }
+        return response || $q.when(response);
       }
     };
   }]);
+app.filter('unique', function () {
+
+  return function (arr, field) {
+    var o = {}, i, l = arr.length, r = [];
+    for (i = 0; i < l; i += 1) {
+      o[arr[i][field]] = arr[i];
+    }
+    for (i in o) {
+      r.push(o[i]);
+    }
+    return r;
+  };
+});
+
+app.directive('openChat', function () {
+  return {
+    restrict: 'AEC',
+    required: 'ngModel',
+    templateUrl: '/scripts/components/chat.html',
+    scope: {
+      chat: '='
+    },
+    controller: function ($scope, socket, $rootScope) {
+      $scope.messages = [];
+      $scope.addMessage = function () {
+        $scope.messages.push({user: {name: 'me', id: $rootScope.currentUser.id}, message: $scope.userMessage});
+        socket.emit('message', {message: $scope.userMessage});
+        $scope.userMessage = "";
+
+      };
+
+      socket.on('new-message', function (data) {
+        $scope.messages.push(data);
+      });
+    },
+    link: function ($scope, element, attr, model) {
+      console.log($scope.chat);
+      console.log(element);
+    }
+  }
+});

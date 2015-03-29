@@ -1,6 +1,5 @@
 module.exports.socketConnection = function (socket, user) {
 
-
   socket.on('audio.set', function (data) {
     socket.broadcast.emit('audio.set', data)
   });

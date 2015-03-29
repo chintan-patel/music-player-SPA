@@ -2,7 +2,7 @@
 
 /**
  *
- * @type {module} Controllers
+ * @type {module} controllers
  */
 var app = angular.module('musicPlayerApp.Controllers', []);
 
@@ -37,7 +37,7 @@ app.controller('SignUpController', ['$scope', '$location', 'UsersFactory', funct
       var promise = UsersFactory.save($scope.user).$promise;
       promise
         .then(function (result) {
-          $location.path('#/login');
+          $location.path('/login');
         })
         .catch(function (err) {
           $scope.errors.length = 0;
@@ -83,37 +83,25 @@ app.controller('AudioController', ['$scope', 'audio', 'AudioFactory', function (
  * LoginController
  * Handles the Login using session
  */
-app.controller('LoginController', function ($scope, $location, $http, $rootScope, $routeParams, Auth) {
+app.controller('LoginController', ['$scope', '$location', '$http', '$rootScope', '$routeParams', '$window', 'jwtHelper', 'Auth', function ($scope, $location, $http, $rootScope, $routeParams, $window, jwtHelper, Auth) {
   $scope.errors = [];
-  $scope.login = function () {
-    if ($scope.loginForm.$invalid) {
-      $scope.errors.length = 0;
-      $scope.errors.push('Please fill all required fields');
-      return false;
-    }
-    if ($scope.user !== undefined) {
-      var data = {
-        username: $scope.user.username,
-        password: $scope.user.password,
-        rememberMe: $scope.user.rememberMe
-      };
-      // Login user if password matches
-      Auth.login('password', data, function (err) {
 
-        // Error redirect to login
-        if (err) {
-          $scope.errors.length = 0;
-          $scope.errors.push(err.message);
-        }
-        else {
-          // Success redirect to home
-          Auth.currentUser();
-          $location.path('/');
-        }
+  // New
+  $scope.submit = function () {
+    var auth = Auth.save($scope.user).$promise;
+    auth.then(function (result) {
+      $window.sessionStorage.token = result.token;
+      $rootScope.currentUser = jwtHelper.decodeToken(result.token);
+      $location.path('/');
+    })
+      .catch(function (err) {
+        delete $window.sessionStorage.token;
+        $rootScope.currentUser = {};
+        $scope.errors.push({msg: err});
       });
-    }
+
   };
-});
+}]);
 
 /**
  * UserController
@@ -137,8 +125,7 @@ app.controller('UserController', ['$scope', '$location', 'user', 'UserFactory', 
         username: user.username
       }).$promise;
       promise.then(function (result) {
-        console.log(result);
-        $location.path('/login');
+        $location.path('/');
       })
         .catch(function (err) {
           console.log(err);
@@ -192,7 +179,7 @@ app.controller('UserController', ['$scope', '$location', 'user', 'UserFactory', 
  * MainController
  * Core controller of app, which handles all the UI interaction
  */
-app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'socket', '$upload', 'loadUserData', 'loadAudioData', 'loadPlaylistData', 'UserFactory', function ($scope, $route, $http, $rootScope, socket, $upload, loadUserData, loadAudioData, loadPlaylistData, UserFactory) {
+app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'socket', '$upload', 'loadUserData', 'loadAudioData', 'loadPlaylistData', 'UserFactory', '$window', '$location', '$filter', function ($scope, $route, $http, $rootScope, socket, $upload, loadUserData, loadAudioData, loadPlaylistData, UserFactory, $window, $location, $filter) {
 
   // Initalize variables
   $scope.currentPlaylist = [];
@@ -285,6 +272,9 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
    */
   $scope.add = function (data) {
     var dataNew = $scope.currentPlaylist;
+    if (dataNew.audio_ids === 'undefined') {
+      dataNew.audio_ids = [];
+    }
     dataNew.audio_ids.push(data);
 
     // Update the playlist model with newly added audio
@@ -422,7 +412,33 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
     }
   });
 
+  $scope.loggedInUsers = [];
+  socket.on('authenticated', function (payload) {
+    $scope.loggedInUsers = payload.msg;
+
+  });
+
+  $scope.chats = [];
+  $scope.openChat = function (user) {
+    if ($scope.chats.indexOf(user) <= -1) {
+      $scope.chats.push(user);
+    }
+  };
+
+  $scope.messages = [];
+  $scope.addMessage = function () {
+    $scope.messages.push({user: {name: 'me', id: $rootScope.currentUser.id}, message: $scope.userMessage});
+    socket.emit('message', {message: $scope.userMessage});
+    $scope.userMessage = "";
+
+  };
+
+  socket.on('new-message', function (data) {
+    $scope.messages.push(data);
+  });
+
   // Update track on Song Added by peer listener
+
   // Using socket.io for real-time communication
   socket.on('song:add', function (data) {
     console.log('song:add');
@@ -463,5 +479,12 @@ app.controller('MainController', ['$scope', '$route', '$http', '$rootScope', 'so
   socket.on('user:join', function (data) {
     $scope.onlineUsers.push(data);
   });
-}]);
 
+
+  //Logout user
+  $rootScope.logout = function () {
+    delete $window.sessionStorage.token;
+    $rootScope.currentUser = null;
+    $location.path('/login');
+  }
+}]);

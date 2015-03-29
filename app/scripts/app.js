@@ -11,6 +11,7 @@
 var app = angular
   .module('musicPlayerApp', [
     'ngAnimate',
+    'angular-jwt',
     'ngCookies',
     'ngResource',
     'ngRoute',
@@ -72,18 +73,16 @@ var app = angular
         redirectTo: '/login'
       });
 
-    //$httpProvider.defaults.headers.common['Authorization'] = 'Bearer '+ authorization_token;
-  }])
-  .run(function ($rootScope, $location, Auth) {
-    //watching the value of the currentUser variable.
-    $rootScope.$watch('currentUser', function (currentUser) {
-      if (!currentUser && (['/', '/login', '/logout', '/signup'].indexOf($location.path()) === -1 )) {
-        Auth.currentUser();
-      }
-    });
-  });
+    $httpProvider.interceptors.push('authInterceptor');
 
-app.controller('ErrorController', ['$scope', 'Auth', '$cookieStore', '$location', function ($scope, Auth, $cookieStore, $location) {
+
+  }]);
+
+app.run(['$rootScope', '$window', 'jwtHelper', function ($rootScope, $window, jwtHelper) {
+  $rootScope.currentUser = (!$window.sessionStorage.token || jwtHelper.isTokenExpired($window.sessionStorage.token)) ? null : jwtHelper.decodeToken($window.sessionStorage.token);
+}]);
+
+app.controller('AppController', ['$scope', '$window', '$location', function ($scope, $window, $location) {
   $scope.isViewLoading = false;
   $scope.errors = [];
   $scope.successMessages = [];

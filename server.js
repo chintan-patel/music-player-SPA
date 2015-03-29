@@ -17,6 +17,9 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var port = parseInt(process.env.PORT, 10) || 3000;
 var passport = require('passport');
+var expressJwt = require('express-jwt');
+var jwt = require('jsonwebtoken');
+var socketJwt = require('socketio-jwt');
 
 
 /**
@@ -40,7 +43,7 @@ var s3Client = new AWS.S3();
 app.set('port', process.env.PORT || 3000);
 
 
-
+app.use('/api', expressJwt({secret: 'secret'}));
 app.use(connect.json());
 app.use(connect.urlencoded());
 app.use(express.static('app'));
@@ -71,6 +74,7 @@ router.use(function (req, res, next) {
   next();
 });
 
+
 // Use router with /api prefix
 app.use('/api', router);
 
@@ -88,18 +92,64 @@ require('./server/config/passport.js')(passport);
 
 require('./server/routes/routes.js')(app);
 
-// Socket.io Communication
-var connection = require('./server/routes/socket.js');
-io.sockets.on('connection', function (socket) {
-  connection.socketConnection(socket);
-});
 
 // Configure Controllers
-require('./server/routes/controllers/user.js')(router, passport, connection, io);
-require('./server/routes/controllers/session.js')(router, passport);
+require('./server/routes/controllers/auth.js')(app, jwt);
+require('./server/routes/controllers/user.js')(router, passport);
 require('./server/routes/controllers/audio.js')(router);
 require('./server/routes/controllers/upload.js')(router, s3Client);
 require('./server/routes/controllers/playlist.js')(router);
+
+require('./server/routes/controllers/session.js')(router, passport);
+
+
+io.set('authorization', socketJwt.authorize({
+  secret: 'secret',
+  handshake: true
+}));
+
+io.sockets
+  .on('connection', function (socket) {
+    console.log(socket.handshake.decoded_token.username, 'connected');
+    var loggedInUsers = [];
+    var clients = io.sockets.clients();
+    clients.forEach(function (socket) {
+      loggedInUsers.push({
+        user: {
+          name: socket.handshake.decoded_token.first_name + ' ' + socket.handshake.decoded_token.last_name,
+          id: socket.handshake.decoded_token.id
+        }
+      });
+    });
+
+    socket.emit('authenticated', {msg: loggedInUsers});
+
+    socket.on('message', function (payload) {
+      socket.broadcast.emit('new-message', {
+        user: {
+          name: socket.handshake.decoded_token.first_name + ' ' + socket.handshake.decoded_token.last_name,
+          id: socket.handshake.decoded_token.id
+        }, message: payload.message
+      });
+    });
+  });
+
+server.listen(3000, function () {
+  console.log('listening on http://localhost:3000');
+});
+
+
+/*
+ io.sockets.on('connection', function (socket) {
+
+ connection.socketConnection(socket);
+
+ /*
+
+ });
+ });
+ */
+
 
 
 
