@@ -1,17 +1,30 @@
-<div class="row placeholders">
-  <form name="loginForm" ng-submit="login()">
-    <div class="form-group">
-      <label for="username">Email address</label>
+<div class="row well">
+  <div class="alert alert-danger" ng-if="errors.length > 0" ng-repeat="error in errors">{{error}}</div>
+  <div class="alert alert-success" ng-if="alert.length >= 0" ng-repeat="success in successMessages">
+    {{success.message}}
+  </div>
+  <form name="loginForm" class="col-sm-5 col-md-5" ng-submit="submit()" novalidate="true">
+    <div class="form-group"
+         ng-class="{'has-error': ((errors.length || loginForm.username.$dirty) && loginForm.username.$invalid)}">
+      <label class="control-label" for="username">Email address</label>
       <input type="email" ng-model="user.username" class="form-control" id="username" name="username"
-             value="{{ username }}" placeholder="Enter email" required>
-      <span ng-show="loginForm.password.$dirty && loginForm.username.$invalid">Email Address Required</span>
+             placeholder="Enter email" required>
     </div>
-    <div class="form-group">
-      <label for="password">Password</label>
+    <div class="form-group"
+         ng-class="{'has-error': ((errors.length || loginForm.password.$dirty) && loginForm.password.$invalid)}">
+      <label class="control-label" for="password">Password</label>
       <input type="password" ng-model="user.password" class="form-control" name="password" id="password"
              placeholder="Password" required>
-      <span ng-show="loginForm.password.$dirty && loginForm.password.$invalid">Password Required</span>
     </div>
-    <input type="submit" ng-disabled="loginForm.$invalid" class="btn btn-default" value="Login"/>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="user.rememberMe"> Remember me
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="control-label">&nbsp;</label>
+      <input type="submit" ng-disabled="loginForm.$invalid" class="btn btn-default" value="Login"/>
+    </div>
+
   </form>
 </div>

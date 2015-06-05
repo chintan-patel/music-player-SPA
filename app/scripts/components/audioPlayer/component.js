@@ -1,7 +1,13 @@
+/**
+ * Directives
+ */
+
+// Audio Player directive
+// Handles play/pause/stop/previous behavior
 angular.module('audioPlayer-directive', [])
     .directive('audioPlayer', function($rootScope) {
         return {
-            restrict: 'E',
+          restrict: 'AEC',
             scope: {},
             controller: function($scope, $element) {
                 $scope.audio = new Audio();
@@ -32,7 +38,6 @@ angular.module('audioPlayer-directive', [])
                     $scope.info = info;
                     $scope.currentNum = currentNum;
                     $scope.totalNum = totalNum;
-                    console.log($scope.totalNum);
                 });
 
                 // update display of things - makes time-scrub work

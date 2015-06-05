@@ -1,0 +1,10 @@
+<div class="well">
+  chat started with {{ user.name }}
+  <form class="form-horizontal" name="eachChatForm" ng-submit="addMessage()">
+    <ul class="unstyled">
+      <li ng-repeat="data in messages">{{ data.user.name }} : {{ data.message }}</li>
+    </ul>
+    <input type="text" ng-model="userMessage" />
+    <input type="submit" name="submit"  value="send" />
+  </form>
+</div>

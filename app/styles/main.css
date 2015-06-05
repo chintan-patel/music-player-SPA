@@ -37,22 +37,6 @@ body {
 .container-narrow > hr {
   margin: 30px 0;
 }
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
-}
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-.marketing p + h4 {
-  margin-top: 28px;
-}
 /* Remove the padding we set earlier */
 .header,
 .marketing,
@@ -64,9 +48,14 @@ body {
 .header {
   margin-bottom: 30px;
 }
-/* Remove the bottom border on the jumbotron for visual effect */
-.jumbotron {
-  border-bottom: 0;
+
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
 }
 .albums {
   margin: 0;
@@ -82,16 +71,39 @@ body {
   background-size: cover;
   border: 1px solid #333;
 }
+ul.online_users,
+ul.audio_list,
 ul.registered_user_list {
   margin-top: 20px;
+  z-index: 1;
 }
-ul.registered_user_list li div.edit-delete,
-ul.audio_list li div.edit-delete {
+ul.online_users li.list-group-item,
+ul.audio_list li.list-group-item,
+ul.registered_user_list li.list-group-item {
+  min-height: 50px;
+}
+ul.online_users li.list-group-item div.username,
+ul.audio_list li.list-group-item div.username,
+ul.registered_user_list li.list-group-item div.username {
+  font-size: .8em;
+  color: #666666;
+}
+ul.online_users li.list-group-item div.edit-delete,
+ul.audio_list li.list-group-item div.edit-delete,
+ul.registered_user_list li.list-group-item div.edit-delete {
   display: none;
 }
-ul.registered_user_list li:hover div.edit-delete,
-ul.audio_list li:hover div.edit-delete {
+ul.online_users li.list-group-item:hover div.edit-delete,
+ul.audio_list li.list-group-item:hover div.edit-delete,
+ul.registered_user_list li.list-group-item:hover div.edit-delete {
   display: block;
+  color: #666666;
+  cursor: pointer;
+}
+ul.online_users li.list-group-item:hover div.edit-delete a,
+ul.audio_list li.list-group-item:hover div.edit-delete a,
+ul.registered_user_list li.list-group-item:hover div.edit-delete a {
+  color: #666666;
 }
 .online_users {
   border: 1px solid #dedede;
@@ -111,47 +123,22 @@ ul.audio_list li:hover div.edit-delete {
 .online_users .close_button {
   list-style-type: none;
 }
-audio-player {
+.audio-player {
+  z-index: 1;
   padding: 20px 0px;
   display: block;
-  background: lightgray;
+  background: #efefef;
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
+  border: 1px solid #666666;
 }
 .loading_view {
   font-size: 2.2em;
   text-align: center;
 }
 .body {
+  background: url('../images/noise-red.jpg');
   margin-bottom: 140px;
-}
-.playlist {
-  height: 100%;
-  width: 100px;
-  background: lightblue;
-  position: absolute;
-  top: 60px;
-  left: 0px;
-  -webkit-animation-timing-function: ease-in-out;
-  /* Chrome, Safari, Opera */
-  -webkit-transition: width .5s;
-  /* Safari */
-  transition: width .5s;
-  animation-timing-function: ease-in-out;
-  border-right: 1px solid #dedede;
-}
-.playlist li i {
-  display: none;
-}
-.playlist:hover {
-  width: 200px;
-  height: 100%;
-  background: lightblue;
-  position: absolute;
-  top: 60px;
-}
-.playlist:hover li i {
-  display: block;
 }

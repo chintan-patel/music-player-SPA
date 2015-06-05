@@ -1,12 +1,38 @@
+/**
+ * mongoose schema for accessing User Collection
+ * bcrypt for encrypting the password
+ * Adding salt factor
+ * @type {*|exports}
+ */
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
-var SALT_WORK_FACTOR = 10;
 
 
 var UserSchema   = new Schema({
-	username: {type: String, required: true, unique: true},
-	password : {type: String, required: true},
+  local: {
+    username: {type: String, required: true, unique: true},
+    password: {type: String, required: true}
+  },
+  facebook: {
+    id: String,
+    token: String,
+    email: String,
+    name: String
+  },
+  google: {
+    id: String,
+    token: String,
+    email: String,
+    name: String
+  },
+  twitter: {
+    id: String,
+    token: String,
+    displayName: String,
+    username: String
+  },
 	salt: String,
   delete: {type: Boolean, default: false},
 	first_name: String,
@@ -14,27 +40,15 @@ var UserSchema   = new Schema({
 	created_on:  {type: Date, default: Date.now}
 });
 
-UserSchema.pre('save', function(next) {
-	var user = this;
-
-	if(!user.isModified('password')) return next();
-
-	bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-		if(err) return next(err);
-		bcrypt.hash(user.password, salt, function(err, hash) {
-			if(err) return next(err);
-			user.password = hash;
-			next();
-		});
-	});
-});
-
-// Password verification
-UserSchema.methods.comparePassword = function(candidatePassword, cb) {
-	bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-		if(err) return cb(err);
-		cb(null, isMatch);
-	});
+UserSchema.methods.generateHash = function (password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
+
+// Password verification used while login
+UserSchema.methods.validPassword = function (candidatePassword) {
+  bcrypt.compareSync(candidatePassword, this.local.password);
+};
+
+// Expose UserSchema as 'User' model
 module.exports = mongoose.model('User', UserSchema);

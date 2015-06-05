@@ -1,24 +1,28 @@
-<div>
-  <div class="row placeholders">
-    <div class="sub-header">Sign Up</div>
-    <form role="form" ng-submit="signUp()">
-      <div class="alert alert-error">{{ error }}</div>
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" ng-model="user.name" class="form-control" id="name" name="name" value="{{ name }}"
-               placeholder="Name">
-      </div>
-      <div class="form-group">
-        <label for="username">Email address</label>
-        <input type="email" ng-model="user.username" class="form-control" id="username" name="username"
-               value="{{ username }}" placeholder="Enter email">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" ng-model="user.password" class="form-control" name="passwrd" id="password"
-               placeholder="Password">
-      </div>
-      <input type="submit" class="btn btn-default" value="Sign Up"/>
-    </form>
+<div class="row well">
+  <div class="alert alert-danger" ng-if="errors.length > 0" ng-repeat="error in errors">{{error}}</div>
+  <div class="alert alert-success" ng-if="alert.length >= 0" ng-repeat="success in successMessages">
+    {{success.message}}
   </div>
+  <h2 class="sub-header">Sign Up</h2>
+
+  <form role="form" name="signUpForm" class="col-xs-5 col-md-5" ng-submit="signUp()" novalidate="true">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" ng-model="user.name" class="form-control" id="name" name="name" value="{{ name }}"
+             placeholder="Name">
+    </div>
+    <div class="form-group"
+         ng-class="{'has-error': ((errors.length || signUpForm.username.$dirty) && signUpForm.username.$invalid)}">
+      <label class="control-label" for="username">Email address</label>
+      <input type="email" ng-model="user.username" class="form-control" id="username" name="username"
+             value="{{ username }}" placeholder="Enter email" required>
+    </div>
+    <div class="form-group"
+         ng-class="{'has-error': ((errors.length || signUpForm.password.$dirty) && signUpForm.password.$invalid)}">
+      <label class="control-label" for="password">Password</label>
+      <input type="password" ng-model="user.password" class="form-control" name="password" id="password"
+             placeholder="Password" required>
+    </div>
+    <input type="submit" class="btn btn-default" value="Sign Up"/>
+  </form>
 </div>

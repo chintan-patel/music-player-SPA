@@ -1,3 +1,8 @@
+/**
+ * mongoose schema for accessing Playlist Collection
+ * @type {*|exports}
+ */
+
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
@@ -13,6 +18,6 @@ PlaylistSchema.methods.getAudioIds = function () {
 	    Map.push(audio_id);
 	});
 	return Map;
-}
+};
 
 module.exports = mongoose.model('Playlist', PlaylistSchema);

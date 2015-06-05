@@ -1,6 +1,13 @@
+/**
+ * Audio model
+ */
 var Audio = require(__dirname + '/../models/audio.js');
 
 module.exports = function (router) {
+  /**
+   * API Endpoint: http://localhost:8080/api/audio
+   * @GET - get all audio
+   */
   router.get('/audio', function (req, res) {
     Audio.find({"delete": false}, function (err, audios) {
       var Map = {};
@@ -11,10 +18,10 @@ module.exports = function (router) {
     });
   });
 
-  // API
-  // http://localhost:8080/api/audio
-  // @POST
-  // @GET
+  /**
+   * API Endpoint: http://localhost:8080/api/audio
+   * @POST
+   */
   router.route('/audio')
     .post(function (req, res) {
 
@@ -34,6 +41,12 @@ module.exports = function (router) {
       });
     });
 
+  /**
+   * API Endpoint: http://localhost:8080/api/audio/:audio_id
+   * @GET
+   * @PUT
+   * @DELETE
+   */
   router.route('/audio/:audio_id')
     .get(function (req, res) {
       Audio.findById(req.params.audio_id, function (err, audio) {

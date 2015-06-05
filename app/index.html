@@ -9,6 +9,7 @@
   <!-- build:css styles/vendor.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/sass-bootstrap/dist/css/bootstrap.css"/>
+  <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css"/>
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -19,28 +20,35 @@
   <!-- endbuild -->
 
 </head>
-<body ng-app="musicPlayerApp" ng-controller="ErrorController" style="background: url('./images/noise-red.jpg');">
+<body ng-app="musicPlayerApp" ng-controller="AppController" ng-cloak>
 <!--[if lt IE 7]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-  your browser</a> to improve your experience.</p>
+<div class="">Browser not supported. Please upgrade</div>
 <![endif]-->
 <!-- Add your site or application content here -->
 <div class="header">
   <ul class="nav nav-pills">
     <li class=""><h4 class="text-muted">KashCandiApp</h4></li>
-    {{ currentUser }}
-    <li ng-show="currentUser" class=""><a ng-href="#">Home ({{ currentUser.first_name}} {{ currentUser.last_name }})</a>
+    <li ng-show="currentUser" class=""><a ng-href="#">Home</a>
     </li>
     <li ng-show="!currentUser" class=""><a ng-href="/#/login">Login</a></li>
     <li ng-show="!currentUser" class=""><a ng-href="/#/signup">Sign up</a></li>
+    <li ng-show="currentUser" class="pull-right">Logged in: {{ currentUser.first_name }} {{ currentUser.last_name }}
+    </li>
+    <li ng-show="currentUser" class="pull-right">
+      <div class="btn btn-link" ng-click="logout()">Logout</div>
+    </li>
   </ul>
 </div>
 <div class="container">
   <div class="row">
     <span ng-show="isViewLoading"><div class="loading_view"><img src="images/ajax-loader.gif"/></div></span>
 
-    <div class="alert alert-danger" ng-show="errors.length && !isViewLoading" ng-repeat="error in errors">{{
+    <div class="alert alert-danger" ng-if="errors.length && isViewLoading" ng-repeat="error in errors">{{
       error.message }}
+    </div>
+    <div class="alert alert-success" ng-if="successMessages.length && isViewLoading"
+         ng-repeat="success in successMessages">{{
+      success.message }}
     </div>
     <div ng-view class="body clearfix"></div>
   </div>
@@ -105,6 +113,7 @@
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
 <script src="scripts/components/audioPlayer/component.js"></script>
 <!-- endbuild -->
 </body>

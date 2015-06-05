@@ -11,6 +11,7 @@
 var app = angular
   .module('musicPlayerApp', [
     'ngAnimate',
+    'angular-jwt',
     'ngCookies',
     'ngResource',
     'ngRoute',
@@ -22,14 +23,17 @@ var app = angular
     'angularFileUpload',
     'audioPlayer-directive'
   ])
-  .config(['$routeProvider', '$resourceProvider', function ($routeProvider, $resourceProvider) {
+  .config(['$routeProvider', '$resourceProvider', '$httpProvider', function ($routeProvider, $resourceProvider, $httpProvider) {
+    $httpProvider.defaults.withCredentials = true;
+
+
     $routeProvider
       .when('/', {
         controller: 'MainController',
         templateUrl: 'views/main.html',
         resolve: {
-          loadUserData: function (UserFactory) {
-            return UserFactory.query().$promise;
+          loadUserData: function (UsersFactory) {
+            return UsersFactory.query().$promise;
           },
           loadPlaylistData: function (PlaylistFactory) {
             return PlaylistFactory.query().$promise;
@@ -41,7 +45,21 @@ var app = angular
       })
       .when('/audio/edit/:audio_id', {
         templateUrl: 'views/audio_edit.html',
-        controller: 'AudioController'
+        controller: 'AudioController',
+        resolve: {
+          audio: function (AudioFactory, $route) {
+            return AudioFactory.get({id: $route.current.params.audio_id}).$promise;
+          }
+        }
+      })
+      .when('/user/edit/:user_id', {
+        templateUrl: 'views/userEdit.html',
+        controller: 'UserController',
+        resolve: {
+          user: function (UserFactory, $route) {
+            return UserFactory.get({id: $route.current.params.user_id}).$promise;
+          }
+        }
       })
       .when('/login', {
         templateUrl: 'views/login.html',
@@ -52,23 +70,22 @@ var app = angular
         controller: 'SignUpController'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/login'
       });
 
-    //$httpProvider.defaults.headers.common['Authorization'] = 'Bearer '+ authorization_token;
-  }])
-  .run(function ($rootScope, $location, Auth) {
-    //watching the value of the currentUser variable.
-    $rootScope.$watch('currentUser', function (currentUser) {
-      if (!currentUser && (['/', '/login', '/logout', '/signup'].indexOf($location.path()) === -1 )) {
-        Auth.currentUser();
-      }
-    });
-  });
+    $httpProvider.interceptors.push('authInterceptor');
 
-app.controller('ErrorController', function ($scope) {
+
+  }]);
+
+app.run(['$rootScope', '$window', 'jwtHelper', function ($rootScope, $window, jwtHelper) {
+  $rootScope.currentUser = (!$window.sessionStorage.token || jwtHelper.isTokenExpired($window.sessionStorage.token)) ? null : jwtHelper.decodeToken($window.sessionStorage.token);
+}]);
+
+app.controller('AppController', ['$scope', '$window', '$location', function ($scope, $window, $location) {
   $scope.isViewLoading = false;
   $scope.errors = [];
+  $scope.successMessages = [];
   $scope.$on('$routeChangeStart', function () {
     $scope.isViewLoading = true;
   });
@@ -76,7 +93,9 @@ app.controller('ErrorController', function ($scope) {
     $scope.isViewLoading = false;
   });
   $scope.$on('$routeChangeError', function (event, current, previous, rejection) {
-    $scope.errors.push(rejection);
+    if (rejection.status === 403) {
+      $location.path('/login');
+    }
   });
-});
+}]);
 

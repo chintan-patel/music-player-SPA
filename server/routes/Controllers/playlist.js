@@ -1,7 +1,17 @@
+'use strict';
+
+/**
+ * import playlist model
+ */
 var Playlist = require(__dirname + '/../models/playlist.js');
 
 
 module.exports = function (router) {
+
+  /**
+   * API Endpoint: /api/playlist
+   * @GET - gets all the not deleted playlist
+   */
   router.get('/playlist', function (req, res) {
     Playlist.find({delete: false}, function (err, playlists) {
       var Map = [];
@@ -12,10 +22,10 @@ module.exports = function (router) {
     });
   });
 
-  // API
-  // http://localhost:8080/api/playlist
-  // @POST
-  // @GET
+  /**
+   * API Endpoint: http://localhost:8080/api/playlist
+   * @POST
+   */
   router.route('/playlist')
     .post(function (req, res) {
 
@@ -34,6 +44,12 @@ module.exports = function (router) {
       });
     });
 
+  /**
+   * API Endpoint: http://localhost:8080/api/playlist/:playlist_id
+   * @GET - get single playlist item
+   * @PUT - update single playlist item
+   * @DELETE - deletes single playlist item
+   */
   router.route('/playlist/:playlist_id')
     .get(function (req, res) {
       var query = Playlist.findById(req.params.playlist_id).where('delete', false);

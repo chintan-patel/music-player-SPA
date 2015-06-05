@@ -2,6 +2,7 @@
 // bower:scss
 //@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
 // endbower
+@import './variables.less';
 
 .browsehappy {
   margin: 0.2em 0;
@@ -49,134 +50,105 @@ body {
   margin: 30px 0;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-  }
+/* Remove the padding we set earlier */
+.header,
+.marketing,
+.footer {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-
-  p + h4 {
-    margin-top: 28px;
-  }
+/* Space out the masthead */
+.header {
+  margin-bottom: 30px;
 }
 
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 .albums {
-    margin:0;
-    padding:0;
+  margin: 0;
+  padding: 0;
 }
 
 .albums li {
-    list-style:none;
-    margin:10px;
-    display:inline-block;
-    width: 120px;
-    height: 120px;
-    background-color: #eee;
-    background-size: cover;
-    border: 1px solid #333;
-}
-ul.registered_user_list {
-  margin-top:20px;
-}
-ul.registered_user_list li div.edit-delete, ul.audio_list li div.edit-delete{
-  display:none;
-}
-ul.registered_user_list li:hover div.edit-delete,  ul.audio_list li:hover div.edit-delete{
-  display:block;
+  list-style: none;
+  margin: 10px;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  background-color: #eee;
+  background-size: cover;
+  border: 1px solid #333;
 }
 
-.online_users{
+ul.online_users, ul.audio_list, ul.registered_user_list {
+  margin-top: 20px;
+  z-index: 1;
+  li.list-group-item {
+    min-height: 50px;
+    div.username {
+      font-size: .8em;
+      color: @gray40;
+    }
+    div.edit-delete {
+      display: none;
+    }
+    &:hover {
+      div.edit-delete {
+        display: block;
+        color: @gray40;
+        cursor: pointer;
+        a {
+          color: @gray40;
+        }
+      }
+    }
+  }
+}
+
+.online_users {
   border: 1px solid #dedede;
 }
-.online_users .list-group-item{
+
+.online_users .list-group-item {
   border: 0;
 }
-.highlight{
+
+.highlight {
   background: rgb(170, 125, 68);
   padding: 0 10px;
   color: white;
   border-radius: 12px;
 }
-.online_users .list-group-item .user_name{
+
+.online_users .list-group-item .user_name {
   word-wrap: break-word;
 }
 
-.online_users .close_button{
+.online_users .close_button {
   list-style-type: none;
 }
 
-audio-player{
+.audio-player {
+  z-index: 1;
   padding: 20px 0px;
   display: block;
-  background:lightgray;
+  background: @gray90;
   position: fixed;
   bottom: 0;
-  left:0;
+  left: 0;
   width: 100%;
+  border: 1px solid @gray40;
 }
 
-.loading_view{
+.loading_view {
   font-size: 2.2em;
   text-align: center;
 }
 
-.body{
+.body {
+  background: url('../images/noise-red.jpg');
   margin-bottom: 140px;
-}
-.playlist{
-  height: 100%;
-  width: 100px;
-  background: lightblue;
-  position: absolute;
-  top: 60px;
-  left: 0px;
-   -webkit-animation-timing-function: ease-in-out; /* Chrome, Safari, Opera */
-   -webkit-transition: width .5s; /* Safari */
-   transition: width .5s;
-   animation-timing-function: ease-in-out;
-   border-right: 1px solid #dedede;
-   li{
-    i{
-      display: none;
-    }
-   }
-  &:hover
-  {
-    width:200px;
-    height: 100%;
-    background: lightblue;
-    position: absolute;
-    top: 60px;
-    li
-    {
-      i{
-	display:block;
-      }
-    }
-   
-  }
 }
