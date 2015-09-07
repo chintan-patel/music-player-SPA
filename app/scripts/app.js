@@ -19,11 +19,11 @@ var app = angular
     'ngTouch',
     'musicPlayerApp.Controllers',
     'musicPlayerApp.Factories',
-    'btford.socket-io',
     'angularFileUpload',
     'audioPlayer-directive'
+
   ])
-  .config(['$routeProvider', '$resourceProvider', '$httpProvider', function ($routeProvider, $resourceProvider, $httpProvider) {
+  .config(['$routeProvider', '$resourceProvider', '$httpProvider', '$locationProvider', function ($routeProvider, $resourceProvider, $httpProvider, $locationProvider) {
     $httpProvider.defaults.withCredentials = true;
 
 
@@ -73,6 +73,7 @@ var app = angular
         redirectTo: '/login'
       });
 
+    $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
 
 

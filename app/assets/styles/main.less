@@ -1,0 +1,151 @@
+//$icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+// bower:scss
+//@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+// endbower
+@import 'variables.less';
+
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+body {
+  background: url('../images/noise-red.jpg');
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Custom page header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+
+  /* Make the masthead heading the same height as the navigation */
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+    padding-bottom: 19px;
+  }
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Remove the padding we set earlier */
+.header,
+.marketing,
+.footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Space out the masthead */
+.header {
+  margin-bottom: 30px;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.albums {
+  margin: 0;
+  padding: 0;
+}
+
+.albums li {
+  list-style: none;
+  margin: 10px;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  background-color: #eee;
+  background-size: cover;
+  border: 1px solid #333;
+}
+
+ul.online_users, ul.audio_list, ul.registered_user_list {
+  margin-top: 20px;
+  z-index: 1;
+  li.list-group-item {
+    min-height: 50px;
+    div.username {
+      font-size: .8em;
+      color: @gray40;
+    }
+    div.edit-delete {
+      display: none;
+    }
+    &:hover {
+      div.edit-delete {
+        display: block;
+        color: @gray40;
+        cursor: pointer;
+        a {
+          color: @gray40;
+        }
+      }
+    }
+  }
+}
+
+.online_users {
+  border: 1px solid #dedede;
+}
+
+.online_users .list-group-item {
+  border: 0;
+}
+
+.highlight {
+  background: rgb(170, 125, 68);
+  padding: 0 10px;
+  color: white;
+  border-radius: 12px;
+}
+
+.online_users .list-group-item .user_name {
+  word-wrap: break-word;
+}
+
+.online_users .close_button {
+  list-style-type: none;
+}
+
+.audio-player {
+  z-index: 1;
+  padding: 20px 0px;
+  display: block;
+  background: @gray90;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border: 1px solid @gray40;
+}
+
+.loading_view {
+  font-size: 2.2em;
+  text-align: center;
+}
+
+.body {
+  background: url('../images/noise-red.jpg');
+  margin-bottom: 140px;
+}

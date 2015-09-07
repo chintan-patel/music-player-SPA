@@ -4,13 +4,15 @@
  **/
 var Audio = require(__dirname + '/../models/audio.js');
 var User = require(__dirname + '/../models/user.js');
+var AWS = require('aws-sdk');
 var fs = require('fs');
+AWS.config.credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-account'});
+var s3client = new AWS.S3();
 
 // Required connect-busboy for reading request body with files
 require('connect-busboy');
 
-
-module.exports = function (router, s3client) {
+module.exports = function (router) {
 
   /**
    * API Endpoint: /api/audio/upload
@@ -24,8 +26,6 @@ module.exports = function (router, s3client) {
       var fileStream;
       req.pipe(req.busboy);
       req.busboy.on('file', function (fieldname, file, filename) {
-
-        console.log("Uploading: " + filename);
 
         // Create InputWriteStream
         fileStream = fs.createWriteStream(__dirname + '/../../upload_files/' + filename);
@@ -65,7 +65,6 @@ module.exports = function (router, s3client) {
 
               // Update model
               audio.save(function (err, audio_data) {
-                console.log(audio_data);
                 res.send(audio_data);
               })
             }
@@ -93,7 +92,6 @@ module.exports = function (router, s3client) {
       if (req.busboy) {
         req.busboy.on('field', function (data, value) {
           user_id = value;
-          console.log(value);
         });
 
         // Detect file
@@ -122,7 +120,6 @@ module.exports = function (router, s3client) {
 
                 // Update the user with new file location
                 user.update({profile_image: user.profile_image}, function (err, user_data) {
-                  console.log(user_data);
                   res.send(user_data);
                 })
               }
@@ -149,27 +146,23 @@ module.exports = function (router, s3client) {
 function upload(localFile, filePath, s3client, res) {
 
   // Read file
-  fs.readFile(localFile, function (err, data) {
-    if (err) {
-      throw err;
-    }
-    var base64data = new Buffer(data, 'binary');
+  var body = fs.createReadStream(localFile);
 
-    // Params for Amazon S3 request
-    var params = {
-      Body: base64data,
-      Bucket: "dev.kashcandi.com",
-      Key: filePath,
-      ACL: 'public-read'
-    };
+  // Params for Amazon S3 request
+  var params = {
+    Bucket: "dev.kashcandi.com",
+    Key: filePath,
+    ACL: 'public-read'
+  };
 
-    // S3 API
-    s3client.putObject(params, function (err, response) {
-      if (err) {
-        console.error("unable to upload:", err.stack);
-        res.send(err);
-      }
-      return true;
+  // S3 API
+  var s3obj = new AWS.S3({params: params});
+  console.log(typeof s3obj);
+  s3obj.upload({Body: body}).
+    on('httpUploadProgress', function (evt) {
+      console.log(evt);
+    }).
+    send(function (err, data) {
+      console.log(err, data)
     });
-  });
 }

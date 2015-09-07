@@ -33,7 +33,6 @@ module.exports = function (app, jwt) {
         username: user.local.username,
         id: user._id
       };
-      console.log(profile);
 
       // We are sending the profile inside the token
       var token = jwt.sign(profile, 'secret', {expiresInMinutes: 60 * 5});

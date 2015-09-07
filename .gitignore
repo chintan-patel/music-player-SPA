@@ -1,7 +1,10 @@
-node_modules/*
+node_modules
 .tmp
 .idea/*
 .jshintrc
 .editorconfig
-server/upload_files/*
-app/bower_components/*
+server/upload_files
+app/bower_components
+.settings
+dist/*
+dist

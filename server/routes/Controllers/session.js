@@ -4,7 +4,6 @@
 module.exports = function (router, passport) {
 
   router.get('/login', function(req, res, next){
-    console.log(req);
     res.send(req.session);
   });
 

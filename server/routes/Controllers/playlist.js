@@ -3,7 +3,7 @@
 /**
  * import playlist model
  */
-var Playlist = require(__dirname + '/../models/playlist.js');
+var Playlist = require(__dirname + '/../models/playlist');
 
 
 module.exports = function (router) {

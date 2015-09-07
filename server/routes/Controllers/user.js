@@ -7,16 +7,16 @@ var User = require(__dirname + '/../models/user.js');
 
 module.exports = function (router, passport) {
   router.get('/user', function (req, res) {
-    if (!req.isAuthenticated()) {
+
+/*    if (!req.isAuthenticated()) {
       res.status(403);
-    }
+    };
+*/
     User.find({delete: false}, function (err, users) {
       var Map = {};
       users.forEach(function (user) {
         Map[user._id] = user;
       });
-
-
       res.send(Map);
     });
   });
@@ -36,6 +36,7 @@ module.exports = function (router, passport) {
 
   /**
    * API Endpoint: http://localhost:8080/api/user/:user_id
+   *
    * @POST
    * @GET
    */
@@ -43,13 +44,14 @@ module.exports = function (router, passport) {
 
     // GET :user_id
     .get(function (req, res) {
-      console.log(req.isAuthenticated());
-      if (req.isAuthenticated()) {
+      //if (req.isAuthenticated()) {
         User.findById(req.params.user_id, function (err, user) {
+          if(err){
+            res.status(403);
+          }
           res.status(200).send(user);
         });
-      }
-      res.status(403);
+      //}
     })
 
   /**
@@ -59,6 +61,7 @@ module.exports = function (router, passport) {
 
       // Find user_id
       User.findById(req.params.user_id, function (err, user) {
+
         if (req.body.username != undefined) {
           user.username = req.body.username;
         }
@@ -110,7 +113,5 @@ module.exports = function (router, passport) {
           res.status(500).send();
         });
       });
-    })
-  ;
-}
-;
+    });
+};

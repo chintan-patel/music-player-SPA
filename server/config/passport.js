@@ -32,16 +32,16 @@ module.exports = function (passport) {
 
       // Async call
       process.nextTick(function () {
-
         User.findOne({'local.username': username}, function (err, user) {
           if (err) {
+            console.log(err);
             return done(err);
           }
+          console.log(user);
 
           if (user) {
             return done(null, false, {message: 'User email already taken: ' + username});
-          }
-          else {
+          } else {
             var newUser = new User();
 
             newUser.local.username = username;
