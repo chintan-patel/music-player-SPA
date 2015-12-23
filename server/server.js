@@ -27,7 +27,10 @@ var socketJwt = require('socketio-jwt');
  * move DB config to configuration file
  */
 var configDB = require(__dirname + '/config/database.js');
-mongoose.connect(configDB.url);
+mongoose.connect(configDB.url, function(err, next){
+    console.log(err);
+    process.exit(0);
+});
 
 
 /**
@@ -43,7 +46,7 @@ var s3Client = new AWS.S3();
 app.set('port', process.env.PORT || 3000);
 
 
-app.use('/api', expressJwt({secret: 'secret'}));
+//app.use('/api', expressJwt({secret: 'secret'}));
 app.use(connect.json());
 app.use(connect.urlencoded());
 app.use(express.static('app'));
@@ -59,7 +62,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static('/bower_components', __dirname + 'bower_components')); 
+app.use(express.static('/bower_components', __dirname + 'bower_components'));
 
 app.set('views', __dirname + '/app/views');
 app.set('view engine', 'html');
