@@ -1,7 +1,8 @@
 {
-  "name": "Music App",
+  "name": "MusicApp",
   "version": "0.0.0",
   "dependencies": {
+    "aws-sdk": "^2.2.26",
     "bcrypt": ">= 0.0.0",
     "body-parser": "~1.0.1",
     "connect": "^2.20.2",
@@ -11,15 +12,15 @@
     "ejs": ">= 0.0.0",
     "ejs-locals": ">= 0.0.0",
     "express": "~4.0.0",
+    "express-jwt": "v2.1.0",
     "express-session": "1.7.6",
     "http-status-codes": "^1.0.5",
+    "jsonwebtoken": "v4.2.2",
     "mongoose": "~3.6.13",
     "passport": "v0.2.0",
     "passport-local": "v1.0.0",
-    "jsonwebtoken": "v4.2.2",
-    "express-jwt": "v2.1.0",
-    "socketio-jwt": "v3.0.0",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "socketio-jwt": "v3.0.0"
   },
   "devDependencies": {
     "grunt": "^0.4.1",

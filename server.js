@@ -15,7 +15,7 @@ var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var port = parseInt(process.env.PORT, 10) || 3000;
+var port = process.env.PORT || 3000;
 var passport = require('passport');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
@@ -59,6 +59,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static('/bower_components', __dirname + 'bower_components')); 
 
 app.set('views', __dirname + '/app/views');
 app.set('view engine', 'html');
@@ -83,15 +84,8 @@ if (app.get('env') === 'development') {
   app.use(connect.errorHandler({dumpExceptions: true, showStack: true}));
 }
 
-// production only
-if (app.get('env') === 'production') {
-}
-
-
 require('./server/config/passport.js')(passport);
-
 require('./server/routes/routes.js')(app);
-
 
 // Configure Controllers
 require('./server/routes/controllers/auth.js')(app, jwt);
@@ -99,61 +93,9 @@ require('./server/routes/controllers/user.js')(router, passport);
 require('./server/routes/controllers/audio.js')(router);
 require('./server/routes/controllers/upload.js')(router, s3Client);
 require('./server/routes/controllers/playlist.js')(router);
-
 require('./server/routes/controllers/session.js')(router, passport);
 
 
-io.set('authorization', socketJwt.authorize({
-  secret: 'secret',
-  handshake: true
-}));
-
-io.sockets
-  .on('connection', function (socket) {
-    console.log(socket.handshake.decoded_token.username, 'connected');
-    var loggedInUsers = [];
-    var clients = io.sockets.clients();
-    clients.forEach(function (socket) {
-      loggedInUsers.push({
-        user: {
-          name: socket.handshake.decoded_token.first_name + ' ' + socket.handshake.decoded_token.last_name,
-          id: socket.handshake.decoded_token.id
-        }
-      });
-    });
-
-    socket.emit('authenticated', {msg: loggedInUsers});
-
-    socket.on('message', function (payload) {
-      socket.broadcast.emit('new-message', {
-        user: {
-          name: socket.handshake.decoded_token.first_name + ' ' + socket.handshake.decoded_token.last_name,
-          id: socket.handshake.decoded_token.id
-        }, message: payload.message
-      });
-    });
-  });
-
 server.listen(3000, function () {
-  console.log('listening on http://localhost:3000');
-});
-
-
-/*
- io.sockets.on('connection', function (socket) {
-
- connection.socketConnection(socket);
-
- /*
-
- });
- });
- */
-
-
-
-
-// Start Node Server
-server.listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + app.get('port'));
+  console.log('Express server listening on port : http://localhost:' + app.get('port'));
 });

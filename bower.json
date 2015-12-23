@@ -15,7 +15,7 @@
     "sass-bootstrap": "~3.0.2",
     "angular-socket-io": "~0.6.0",
     "ng-file-upload-shim": "~3.1.0",
-    "angular-jwt": "v0.0.6",
+    "angular-jwt": "~0.0.9",
     "a0-angular-storage": "v0.0.9",
     "fontawesome": "v4.3.0",
     "ng-file-upload": "~3.1.0"
