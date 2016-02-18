@@ -11,8 +11,11 @@ module.exports = function (router, passport) {
       res.status(403);
     }
     User.find({delete: false}, function (err, users) {
+		if(err) {
+			console.log(err);
+		}
       var Map = {};
-      users.forEach(function (user) {
+      users && users.forEach(function (user) {
         Map[user._id] = user;
       });
 
@@ -40,16 +43,12 @@ module.exports = function (router, passport) {
    * @GET
    */
   router.route('/user/:user_id')
-
     // GET :user_id
     .get(function (req, res) {
-      console.log(req.isAuthenticated());
-      if (req.isAuthenticated()) {
         User.findById(req.params.user_id, function (err, user) {
           res.status(200).send(user);
         });
-      }
-      res.status(403);
+      res.status(200);
     })
 
   /**
@@ -59,39 +58,47 @@ module.exports = function (router, passport) {
 
       // Find user_id
       User.findById(req.params.user_id, function (err, user) {
-        if (req.body.username != undefined) {
-          user.username = req.body.username;
-        }
-        if (req.body.password != undefined) {
-          user.password = req.body.password;
-        }
-        if (req.body.salt != undefined) {
-          user.salt = req.body.salt;
-        }
-        if (req.body.first_name != undefined) {
-          user.first_name = req.body.first_name;
-        }
-        if (req.body.last_name != undefined) {
-          user.last_name = req.body.last_name;
-        }
-        if (req.body.delete != undefined) {
-          user.delete = req.body.delete;
-        }
+		  if(err) {
+		  	res.status(500);
+		  }
+		  if(user) {
+			if (req.body.username) {
+			  user.username = req.body.username;
+			}
+			if (req.body.password) {
+			  user.password = req.body.password;
+			}
+			if (req.body.salt) {
+			  user.salt = req.body.salt;
+			}
+			if (req.body.first_name) {
+			  user.first_name = req.body.first_name;
+			}
+			if (req.body.last_name) {
+			  user.last_name = req.body.last_name;
+			}
+			if (req.body.delete) {
+			  user.delete = req.body.delete;
+			}
 
-        // Update user model with values
-        user.update(
-          {
-            first_name: user.first_name,
-            last_name: user.last_name,
-            delete: user.delete,
-            username: user.username
-          },
-          function (err) {
-            if (err) {
-              res.status(500).send();
-            }
-            res.json({message: true});
-          });
+			// Update user model with values
+			user.update(
+			  {
+				first_name: user.first_name,
+				last_name: user.last_name,
+				delete: user.delete,
+				username: user.username
+			  },
+			  function (err) {
+				if (err) {
+				  res.status(500).send();
+				}
+				res.json({message: true});
+			  });
+		  }
+		  else {
+            res.status(200).send({});
+		  }
       });
     })
 

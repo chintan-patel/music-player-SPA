@@ -16,7 +16,7 @@
     "express-session": "1.7.6",
     "http-status-codes": "^1.0.5",
     "jsonwebtoken": "v4.2.2",
-    "mongoose": "~3.6.13",
+    "mongoose": "~4.4.0",
     "passport": "v0.2.0",
     "passport-local": "v1.0.0",
     "socket.io": "~0.9.16",

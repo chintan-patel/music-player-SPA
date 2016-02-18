@@ -27,10 +27,12 @@ var socketJwt = require('socketio-jwt');
  * move DB config to configuration file
  */
 var configDB = require(__dirname + '/config/database.js');
-mongoose.connect(configDB.url, function(err, next){
-    console.log(err);
-    process.exit(0);
-});
+mongoose.connect(configDB.url);
+
+if(!mongoose.connection) {
+	console.log('MongoDB connection failed');
+	process.exit(1);	
+}
 
 
 /**

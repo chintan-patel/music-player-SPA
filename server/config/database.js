@@ -3,5 +3,6 @@
  **/
 
 module.exports = {
-    url: 'mongodb://chintan:chintan@localhost:27017/test'
+	//url: 'mongodb://myUserAdmin:abc123@localhost:27017/admin'
+	url: 'mongodb://chintan:chintan@localhost:27017/test'
 };
