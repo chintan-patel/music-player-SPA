@@ -6,3 +6,4 @@ dist
 .editorconfig
 server/upload_files/*
 app/bower_components/*
+mp3/*

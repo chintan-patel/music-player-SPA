@@ -24,7 +24,7 @@ function getUsers(req, res) {
 function postUser(req, res, next) {
     passport.authenticate('local-signup', function (err, user, info) {
         if (err) {
-            res.status(400).send(err);
+            res.status(403).send(err);
         }
         res.send(user);
     })(req, res, next);

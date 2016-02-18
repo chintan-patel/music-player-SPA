@@ -6,7 +6,7 @@ var Audio = require(__dirname + '/audio/audio');
 var User = require(__dirname + '/user/user');
 var fs = require('fs');
 var AWS = require('aws-sdk');
-var credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-account'});
+var credentials = new AWS.SharedIniFileCredentials({profile: 'dhd-account'});
 AWS.config.credentials = credentials;
 var s3client = new AWS.S3();
 
@@ -32,7 +32,7 @@ module.exports = function (router) {
         console.log("Uploading: " + filename);
 
         // Create InputWriteStream
-        fileStream = fs.createWriteStream(__dirname + '/../../upload_files/' + filename);
+        fileStream = fs.createWriteStream(__dirname + '/../../app/mp3/' + filename);
 
         // Pipe stream of file to stream
         file.pipe(fileStream);
@@ -46,7 +46,7 @@ module.exports = function (router) {
           // Assigned values from request to model
           audio.name = filename;
           audio.user_id = req.body.user_id;
-          audio.key = __dirname + '/../../upload_files/' + filename;
+          audio.key = __dirname + '/../../app/mp3/' + filename;
 
           // Error response if the filename is not available
           if (audio.name == undefined) {
@@ -65,7 +65,7 @@ module.exports = function (router) {
 
             // Call standalone class to move file from local to S3
             // Synchronous call
-            if (upload(audio.key, filePath, s3client)) {
+            if (upload(audio.key, filePath)) {
 
               // Update model
               audio.save(function (err, audio_data) {
@@ -122,7 +122,7 @@ module.exports = function (router) {
               var filePath = "user/" + user._id + "/profile/" + Math.round(Math.random(1, 1000000)) + '_' + filename;
 
               // Upload the file to profile image
-              if (upload(user.profile_image, filePath, s3client, res)) {
+              if (upload(user.profile_image, filePath, res)) {
 
                 // Update the user with new file location
                 user.update({profile_image: user.profile_image}, function (err, user_data) {
@@ -150,7 +150,7 @@ module.exports = function (router) {
  * @param s3client - S3 client
  * @param res - Response
  */
-function upload(localFile, filePath, s3client, res) {
+function upload(localFile, filePath, res) {
 
   // Read file
   fs.readFile(localFile, function (err, data) {
@@ -162,7 +162,7 @@ function upload(localFile, filePath, s3client, res) {
     // Params for Amazon S3 request
     var params = {
       Body: base64data,
-      Bucket: "dev.kashcandi.com",
+      Bucket: "dev.musicapp.com",
       Key: filePath,
       ACL: 'public-read'
     };
