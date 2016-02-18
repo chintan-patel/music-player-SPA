@@ -9,7 +9,6 @@ var app = module.exports = express();
 var server = require('http').createServer(app);
 var flash = require('connect-flash');
 var io = require('socket.io').listen(server);
-var AWS = require('aws-sdk');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var busboy = require('connect-busboy');
@@ -31,17 +30,10 @@ mongoose.connect(configDB.url);
 
 if(!mongoose.connection) {
 	console.log('MongoDB connection failed');
-	process.exit(1);	
+	process.exit(1);
 }
 
 
-/**
- *  Configuration
- *  Get AWS/S3Client - using kashcandi-account credentials saved on local file system
- */
-var credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-account'});
-AWS.config.credentials = credentials;
-var s3Client = new AWS.S3();
 /**
  * App Port || 3000
  */
@@ -90,15 +82,18 @@ if (app.get('env') === 'development') {
 }
 
 require('./config/passport.js')(passport);
-require('./routes/routes.js')(app);
+app.get('/', function (req, res) {
+    res.render(__dirname + '/app/index.html');
+  });
+
 
 // Configure Controllers
-require('./routes/controllers/auth.js')(app, jwt);
-require('./routes/controllers/user.js')(router, passport);
-require('./routes/controllers/audio.js')(router);
-require('./routes/controllers/upload.js')(router, s3Client);
-require('./routes/controllers/playlist.js')(router);
-require('./routes/controllers/session.js')(router, passport);
+require('./resources/user/auth')(router, jwt);
+require('./resources/user/user.controller')(router);
+require('./resources/audio/audio.controller')(router);
+require('./resources/upload')(router);
+require('./resources/playlist/playlist.controller')(router);
+require('./resources/user/session')(router);
 
 
 server.listen(3000, function () {

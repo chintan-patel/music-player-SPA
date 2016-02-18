@@ -2,7 +2,7 @@
  * User Model
  * LocalStrategy used by passportjs
  */
-var User = require(__dirname + '/../routes/models/user.js');
+var User = require(__dirname + '/../resources/user/user.js');
 var LocalStrategy = require('passport-local').Strategy;
 
 module.exports = function (passport) {

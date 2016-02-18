@@ -2,15 +2,19 @@
  * Handle upload module
  * @POST
  **/
-var Audio = require(__dirname + '/../models/audio.js');
-var User = require(__dirname + '/../models/user.js');
+var Audio = require(__dirname + '/audio/audio');
+var User = require(__dirname + '/user/user');
 var fs = require('fs');
+var AWS = require('aws-sdk');
+var credentials = new AWS.SharedIniFileCredentials({profile: 'kashcandi-account'});
+AWS.config.credentials = credentials;
+var s3client = new AWS.S3();
 
 // Required connect-busboy for reading request body with files
 require('connect-busboy');
 
 
-module.exports = function (router, s3client) {
+module.exports = function (router) {
 
   /**
    * API Endpoint: /api/audio/upload
